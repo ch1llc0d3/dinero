@@ -24,9 +24,18 @@ DRAWINGS_PER_YEAR = 156  # twice a week
 
 
 def ask(prompt, default, cast=str, minimum=None):
-    """Prompt the user, falling back to `default` on empty/invalid input."""
+    """Prompt the user, falling back to `default` on empty/invalid input.
+
+    If stdin is not interactive (piped, redirected, or closed), the
+    default is used immediately instead of crashing with EOFError.
+    """
+    if not sys.stdin.isatty():
+        return default
     while True:
-        raw = input(f"{prompt} [{default}]: ").strip()
+        try:
+            raw = input(f"{prompt} [{default}]: ").strip()
+        except EOFError:
+            return default
         if raw == "":
             return default
         try:
@@ -88,8 +97,12 @@ def calc_win_amt(my_numbers, winning_numbers, times_won, jackpot):
     return win_amt, is_jackpot
 
 
-def run_simulation(tickets_per_drawing, ticket_cost, jackpot, live=True):
-    """Run the sim until the jackpot is hit. Returns a summary dict."""
+def run_simulation(tickets_per_drawing, ticket_cost, jackpot, live=True, max_drawings=None):
+    """Run the sim until the jackpot is hit. Returns a summary dict.
+
+    `max_drawings` optionally caps the run (useful when stdin/stdout is
+    not a terminal and Ctrl+C isn't available).
+    """
     times_won = {
         "5+P": 0, "5": 0, "4+P": 0, "4": 0, "3+P": 0, "3": 0,
         "2+P": 0, "1+P": 0, "P": 0, "0": 0,
@@ -100,6 +113,7 @@ def run_simulation(tickets_per_drawing, ticket_cost, jackpot, live=True):
     best_win = 0
     drawings = 0
     hit_jp = False
+    capped = False
 
     try:
         while True:
@@ -148,8 +162,12 @@ def run_simulation(tickets_per_drawing, ticket_cost, jackpot, live=True):
 
             if hit_jp:
                 break
+            if max_drawings is not None and drawings >= max_drawings:
+                capped = True
+                break
     except KeyboardInterrupt:
         print("\n\n🛑 Stopped early — cashing out with what you have.")
+        capped = True
 
     return {
         "drawings": drawings,
@@ -158,6 +176,7 @@ def run_simulation(tickets_per_drawing, ticket_cost, jackpot, live=True):
         "earnings": earnings,
         "best_win": best_win,
         "hit_jackpot": hit_jp,
+        "capped": capped,
         "times_won": times_won,
     }
 
@@ -167,6 +186,8 @@ def print_summary(result, tickets_per_drawing, ticket_cost):
     print("=" * 60)
     if result["hit_jackpot"]:
         print("🎉 JACKPOT HIT! 🎉")
+    elif result.get("capped"):
+        print("Simulation ended at its drawing cap (non-interactive run).")
     else:
         print("Simulation ended early (Ctrl+C).")
     print("=" * 60)
@@ -204,7 +225,11 @@ def main():
           f"{money(tickets_per_drawing * ticket_cost)} per drawing, "
           f"{money(tickets_per_drawing * ticket_cost * DRAWINGS_PER_YEAR)} per year.\n")
 
-    result = run_simulation(tickets_per_drawing, ticket_cost, jackpot)
+    interactive = sys.stdin.isatty() and sys.stdout.isatty()
+    max_drawings = None if interactive else DRAWINGS_PER_YEAR * 100
+
+    result = run_simulation(tickets_per_drawing, ticket_cost, jackpot,
+                            live=interactive, max_drawings=max_drawings)
     print()  # newline after the live timeline line
     print_summary(result, tickets_per_drawing, ticket_cost)
 
