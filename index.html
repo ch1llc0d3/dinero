@@ -1,48 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dinero — Lottery Probability Simulations</title>
+  <title data-i18n="title">dinero — Lottery Probability Simulations</title>
   <meta name="description" content="dinero: Python simulations that answer one question — how much money do you actually make (or lose) playing the lottery?" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <div class="controls">
+    <div class="switch-group" role="group" aria-label="Language">
+      <button class="switch-btn" id="lang-en" type="button" aria-pressed="true">EN</button>
+      <button class="switch-btn" id="lang-es" type="button" aria-pressed="false">ES</button>
+    </div>
+    <button class="switch-btn" id="theme-toggle" type="button" aria-label="Toggle theme">
+      <span id="theme-icon">☀️</span>
+    </button>
+  </div>
+
   <header class="hero">
     <h1>💰 dinero</h1>
-    <p class="tagline">Lottery probability simulations — how much money do you actually make (or lose) playing?</p>
-    <a class="cta" href="#parts">Explore the project ↓</a>
+    <p class="tagline" data-i18n="tagline">Lottery probability simulations — how much money do you actually make (or lose) playing?</p>
+    <a class="cta" href="#parts" data-i18n="cta">Explore the project ↓</a>
   </header>
 
   <main>
     <section id="parts" class="parts">
-      <h2>What's inside</h2>
+      <h2 data-i18n="whatsInside">What's inside</h2>
       <div class="cards">
         <article class="card">
           <span class="card-icon">🐍</span>
           <h3>powerball.py</h3>
-          <p>US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket. Buys 100 tickets per drawing, 2 drawings/week, until the $2B jackpot is hit — then reports spent vs. earnings and a win-tier breakdown.</p>
-          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/powerball.py" target="_blank" rel="noopener">View source →</a>
+          <p data-i18n="powerballDesc">US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket. Buys 100 tickets per drawing, 2 drawings/week, until the $2B jackpot is hit — then reports spent vs. earnings and a win-tier breakdown.</p>
+          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/powerball.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
         </article>
 
         <article class="card card-scaffold">
           <span class="card-icon">🎲</span>
           <h3>binguito.py</h3>
-          <p>Paraguayan Binguito simulation — scaffold. Waiting on the actual game rules (ball pools, prize table, ticket cost, drawing frequency) before implementing.</p>
-          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/binguito.py" target="_blank" rel="noopener">View source →</a>
+          <p data-i18n="binguitoDesc">Paraguayan Binguito simulation — scaffold. Waiting on the actual game rules (ball pools, prize table, ticket cost, drawing frequency) before implementing.</p>
+          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/binguito.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
         </article>
 
         <article class="card">
           <span class="card-icon">📄</span>
           <h3>README.md</h3>
-          <p>Project documentation: how each simulation works and how to run it.</p>
-          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/README.md" target="_blank" rel="noopener">View source →</a>
+          <p data-i18n="readmeDesc">Project documentation: how each simulation works and how to run it.</p>
+          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/README.md" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
         </article>
       </div>
     </section>
 
     <section class="run">
-      <h2>Run it yourself</h2>
+      <h2 data-i18n="runItYourself">Run it yourself</h2>
       <pre><code>git clone https://github.com/ch1llc0d3/dinero.git
 cd dinero
 python3 powerball.py</code></pre>
@@ -50,7 +60,7 @@ python3 powerball.py</code></pre>
   </main>
 
   <footer>
-    <p>Built with <span class="tech">HTML</span> · <span class="tech">CSS</span> · <span class="tech">JavaScript</span> — simulations in Python</p>
+    <p><span data-i18n="builtWith">Built with</span> <span class="tech">HTML</span> · <span class="tech">CSS</span> · <span class="tech">JavaScript</span> — <span data-i18n="simsInPython">simulations in Python</span></p>
   </footer>
 
   <script src="js/main.js"></script>
