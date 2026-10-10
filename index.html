@@ -81,6 +81,7 @@
     </section>
 
     <section id="powerball-sim" class="sim" aria-labelledby="sim-heading">
+      <canvas id="sim-rain" aria-hidden="true"></canvas>
       <h2 id="sim-heading" data-i18n="simHeading">🎮 Try powerball.py in your browser</h2>
       <p class="sim-intro" data-i18n="simIntro">The same simulation as powerball.py, running right here: pick your settings, press Start, and watch the years roll by. Press Cash out any time to stop and see your results.</p>
 
@@ -126,7 +127,9 @@ python3 powerball.py</code></pre>
     <p><span data-i18n="builtWith">Built with</span> <span class="tech">HTML</span> · <span class="tech">CSS</span> · <span class="tech">JavaScript</span> — <span data-i18n="simsInPython">simulations in Python</span></p>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/money-rain.js"></script>
   <script src="js/powerball-sim.js"></script>
 </body>
 </html>

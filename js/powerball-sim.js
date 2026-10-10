@@ -135,6 +135,7 @@
     liveWon: document.getElementById("sim-live-won"),
     liveNet: document.getElementById("sim-live-net"),
     output: document.getElementById("sim-output"),
+    section: document.getElementById("powerball-sim"),
   };
   if (!el.start) return; // sim section not present
 
@@ -165,7 +166,17 @@
     el.liveDrawings.textContent = t("drawings") + " " + state.drawings.toLocaleString("en-US");
     el.liveSpent.textContent = t("spent") + " " + money(state.totalSpent);
     el.liveWon.textContent = t("won") + " " + money(state.earnings);
-    el.liveNet.textContent = t("net") + " " + money(state.earnings - state.totalSpent);
+    var net = state.earnings - state.totalSpent;
+    el.liveNet.textContent = t("net") + " " + money(net);
+    el.liveNet.classList.toggle("net-negative", net < 0);
+    el.liveNet.classList.toggle("net-positive", net >= 0);
+
+    // Money rain intensity follows how fast we're burning cash
+    if (window.MoneyRain) {
+      var burn = state.ticketsPerDrawing * state.ticketCost * 156; // $ per sim-year
+      var rate = Math.min(1, Math.log10(Math.max(burn, 1)) / 6); // $1 .. $1M+/yr
+      window.MoneyRain.setIntensity(rate);
+    }
   }
 
   // One simulated drawing per tick, a few ticks per frame — fast enough
@@ -208,6 +219,18 @@
     el.tickets.disabled = false;
     el.cost.disabled = false;
     el.jackpot.disabled = false;
+    el.section.classList.remove("sim-running");
+
+    if (state.hitJackpot) {
+      el.section.classList.add("jackpot");
+      if (window.MoneyRain) window.MoneyRain.celebrate();
+      // Let the gold rain fall for a moment, then stop it
+      setTimeout(function () {
+        if (window.MoneyRain) window.MoneyRain.stop();
+      }, 5000);
+    } else {
+      if (window.MoneyRain) window.MoneyRain.stop();
+    }
     printSummary();
   }
 
@@ -223,7 +246,8 @@
     lines.push(t("totalInvested") + " : " + money(state.totalSpent));
     lines.push(t("totalEarnings") + " : " + money(state.earnings));
     var net = state.earnings - state.totalSpent;
-    lines.push(t("netResult") + " : " + money(net) + "  (" + (net >= 0 ? t("profit") : t("loss")) + ")");
+    var netLine = t("netResult") + " : " + money(net) + "  (" + (net >= 0 ? t("profit") : t("loss")) + ")";
+    lines.push({ html: '<span class="' + (net >= 0 ? "net-positive" : "net-negative") + '">' + escapeHtml(netLine) + "</span>" });
     lines.push(t("bestSingleWin") + " : " + money(state.bestWin));
     lines.push("");
     lines.push(t("winsBreakdown") + ":");
@@ -233,8 +257,20 @@
       }
     });
     lines.push("=".repeat(60));
-    el.output.textContent = lines.join("\n");
+    var html = lines
+      .map(function (line) {
+        return typeof line === "string" ? escapeHtml(line) : line.html;
+      })
+      .join("\n");
+    el.output.innerHTML = html;
     el.output.hidden = false;
+  }
+
+  function escapeHtml(s) {
+    return s
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
   }
 
   function readInputs() {
@@ -266,7 +302,11 @@
 
     el.output.hidden = true;
     el.live.hidden = false;
+    el.section.classList.remove("jackpot");
+    el.section.classList.add("sim-running");
     updateLive();
+
+    if (window.MoneyRain) window.MoneyRain.start();
 
     timer = setInterval(tick, 16);
   });
