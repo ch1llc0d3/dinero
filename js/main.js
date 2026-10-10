@@ -7,10 +7,17 @@ const translations = {
     tagline: "Lottery probability simulations — how much money do you actually make (or lose) playing?",
     cta: "Explore the project ↓",
     whatsInside: "What's inside",
+    usaGames: "USA games",
+    paraguayGames: "Paraguay games",
+    docs: "Docs",
     powerballDesc:
       "US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket. Buys 100 tickets per drawing, 2 drawings/week, until the $2B jackpot is hit — then reports spent vs. earnings and a win-tier breakdown.",
+    telebingoDesc:
+      "Telebingo de Canal 9 TV Cerro Corá (GAMBLING S.A. / Conajzar): cartones with 01–25 numbers. GRANDIOSO, PODEROSO and DOBLE CHANCE draws — 12, 12 and 15 balls respectively, with per-tier wins and only the highest tier paying per drawing.",
+    seneteDesc:
+      "Seneté (Paraguay) — the animal-lottery game. Scaffold pending the actual rules: animal pool size, balls drawn per sorteo, ticket cost in Guaraníes, prize table and drawing frequency.",
     binguitoDesc:
-      "Paraguayan Binguito simulation — scaffold. Waiting on the actual game rules (ball pools, prize table, ticket cost, drawing frequency) before implementing.",
+      "Deprecated — the Telebingo reglamento arrived and the game was split into telebingo.py (implemented) and senete.py (scaffold). Kept for history.",
     readmeDesc: "Project documentation: how each simulation works and how to run it.",
     viewSource: "View source →",
     runItYourself: "Run it yourself",
@@ -22,10 +29,19 @@ const translations = {
     tagline: "Simulaciones de probabilidad de lotería — ¿cuánto dinero ganas (o pierdes) realmente jugando?",
     cta: "Explora el proyecto ↓",
     whatsInside: "Qué hay dentro",
+    usaGames: "Juegos de EE.UU.",
+    paraguayGames: "Juegos de Paraguay",
+    docs: "Documentación",
     powerballDesc:
       "Simulación de Powerball (EE.UU.): 5 bolas blancas (1–69) + 1 Powerball roja (1–26), $2 por boleto. Compra 100 boletos por sorteo, 2 sorteos por semana, hasta ganar el pozo de $2 mil millones — luego reporta lo gastado vs. lo ganado y el desglose por nivel de premio.",
+    powerballDesc:
+      "Simulación de Powerball (EE.UU.): 5 bolas blancas (1–69) + 1 Powerball roja (1–26), $2 por boleto. Compra 100 boletos por sorteo, 2 sorteos por semana, hasta ganar el pozo de $2 mil millones — luego reporta lo gastado vs. lo ganado y el desglose por nivel de premio.",
+    telebingoDesc:
+      "Telebingo de Canal 9 TV Cerro Corá (GAMBLING S.A. / Conajzar): cartones con números 01–25. Sorteos GRANDIOSO, PODEROSO y DOBLE CHANCE — 12, 12 y 15 bolillas respectivamente, con premios por nivel y solo el nivel más alto paga por sorteo.",
+    seneteDesc:
+      "Seneté (Paraguay) — el juego de la lotería de animales. Estructura base pendiente de las reglas reales: tamaño del pool de animales, bolillas por sorteo, costo del cartón en Guaraníes, tabla de premios y frecuencia de sorteos.",
     binguitoDesc:
-      "Simulación del Binguito paraguayo — estructura base. Esperando las reglas reales del juego (bolilleros, tabla de premios, costo del cartón, frecuencia de sorteos) antes de implementarlo.",
+      "Obsoleto — llegó el reglamento de Telebingo y el juego se dividió en telebingo.py (implementado) y senete.py (estructura base). Se conserva por historial.",
     readmeDesc: "Documentación del proyecto: cómo funciona cada simulación y cómo ejecutarla.",
     viewSource: "Ver código →",
     runItYourself: "Ejecútalo tú mismo",

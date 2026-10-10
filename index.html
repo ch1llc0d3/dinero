@@ -27,28 +27,56 @@
   <main>
     <section id="parts" class="parts">
       <h2 data-i18n="whatsInside">What's inside</h2>
-      <div class="cards">
-        <article class="card">
-          <span class="card-icon">🐍</span>
-          <h3>powerball.py</h3>
-          <p data-i18n="powerballDesc">US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket. Buys 100 tickets per drawing, 2 drawings/week, until the $2B jackpot is hit — then reports spent vs. earnings and a win-tier breakdown.</p>
-          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/powerball.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
-        </article>
 
-        <article class="card card-scaffold">
-          <span class="card-icon">🎲</span>
-          <h3>binguito.py</h3>
-          <p data-i18n="binguitoDesc">Paraguayan Binguito simulation — scaffold. Waiting on the actual game rules (ball pools, prize table, ticket cost, drawing frequency) before implementing.</p>
-          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/binguito.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
-        </article>
+      <section class="game-group" aria-labelledby="usa-heading">
+        <h3 id="usa-heading" class="group-heading"><span class="flag">🇺🇸</span> <span data-i18n="usaGames">USA games</span></h3>
+        <div class="cards">
+          <article class="card">
+            <span class="card-icon">🐍</span>
+            <h3>powerball.py</h3>
+            <p data-i18n="powerballDesc">US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket. Buys 100 tickets per drawing, 2 drawings/week, until the $2B jackpot is hit — then reports spent vs. earnings and a win-tier breakdown.</p>
+            <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/powerball.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
+          </article>
+        </div>
+      </section>
 
-        <article class="card">
-          <span class="card-icon">📄</span>
-          <h3>README.md</h3>
-          <p data-i18n="readmeDesc">Project documentation: how each simulation works and how to run it.</p>
-          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/README.md" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
-        </article>
-      </div>
+      <section class="game-group" aria-labelledby="paraguay-heading">
+        <h3 id="paraguay-heading" class="group-heading"><span class="flag">🇵🇾</span> <span data-i18n="paraguayGames">Paraguay games</span></h3>
+        <div class="cards">
+          <article class="card">
+            <span class="card-icon">📺</span>
+            <h3>telebingo.py</h3>
+            <p data-i18n="telebingoDesc">Telebingo de Canal 9 TV Cerro Corá (GAMBLING S.A. / Conajzar): cartones with 01–25 numbers. GRANDIOSO, PODEROSO and DOBLE CHANCE draws — 12, 12 and 15 balls respectively, with per-tier wins and only the highest tier paying per drawing.</p>
+            <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/telebingo.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
+          </article>
+
+          <article class="card card-scaffold">
+            <span class="card-icon">🐴</span>
+            <h3>senete.py</h3>
+            <p data-i18n="seneteDesc">Seneté (Paraguay) — the animal-lottery game. Scaffold pending the actual rules: animal pool size, balls drawn per sorteo, ticket cost in Guaraníes, prize table and drawing frequency.</p>
+            <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/senete.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
+          </article>
+
+          <article class="card card-scaffold">
+            <span class="card-icon">🎲</span>
+            <h3>binguito.py</h3>
+            <p data-i18n="binguitoDesc">Deprecated — the Telebingo reglamento arrived and the game was split into telebingo.py (implemented) and senete.py (scaffold). Kept for history.</p>
+            <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/binguito.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="game-group" aria-labelledby="docs-heading">
+        <h3 id="docs-heading" class="group-heading"><span class="flag">📄</span> <span data-i18n="docs">Docs</span></h3>
+        <div class="cards">
+          <article class="card">
+            <span class="card-icon">📄</span>
+            <h3>README.md</h3>
+            <p data-i18n="readmeDesc">Project documentation: how each simulation works and how to run it.</p>
+            <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/README.md" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
+          </article>
+        </div>
+      </section>
     </section>
 
     <section class="run">
