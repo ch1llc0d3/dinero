@@ -161,12 +161,51 @@ h2 { margin-bottom: 1.5rem; }
   margin-bottom: 1.25rem;
 }
 
+/* ---------- 2026 facts strip ---------- */
+.sim-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+}
+
+.fact-value {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.fact-per {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.85em;
+}
+
+.fact-label {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+/* ---------- config + presets ---------- */
 .sim-config {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   align-items: flex-end;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .sim-config label {
@@ -194,6 +233,39 @@ h2 { margin-bottom: 1.5rem; }
 }
 .sim-config input:disabled {
   opacity: 0.6;
+}
+
+.sim-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+}
+
+.preset-chip {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.preset-chip:hover:not(.disabled) {
+  color: var(--text);
+  border-color: var(--accent);
+}
+.preset-chip.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(240, 180, 41, 0.08);
+}
+.preset-chip.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .sim-buttons {
@@ -236,26 +308,50 @@ h2 { margin-bottom: 1.5rem; }
   color: var(--bg);
 }
 
+/* ---------- live stat cards ---------- */
 .sim-live {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.25rem;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  font-size: 0.9rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  gap: 0.6rem;
   margin-bottom: 1rem;
 }
+.sim-live[hidden] {
+  display: none;
+}
 
-/* net result coloring: losses in red, profit in green */
-#sim-live-net {
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  min-width: 0;
+}
+
+.stat-value {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 1.25rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.stat-net .stat-value {
   transition: color 0.3s ease;
 }
-#sim-live-net.net-negative { color: #f85149; }
-#sim-live-net.net-positive { color: var(--accent-2); }
+.stat-net .stat-value.net-negative { color: #f85149; }
+.stat-net .stat-value.net-positive { color: var(--accent-2); }
 
 /* live panel glows softly while the sim is running */
 @keyframes simGlow {
@@ -275,15 +371,166 @@ h2 { margin-bottom: 1.5rem; }
   animation: stopPulse 1.2s ease-in-out infinite;
 }
 
-/* summary slides up into view */
+/* ---------- summary cards ---------- */
 @keyframes riseIn {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.sim-output {
-  margin-top: 0;
-  white-space: pre-wrap;
+.sim-summary {
   animation: riseIn 0.45s ease both;
+}
+
+.verdict {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+.verdict-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+.verdict-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.verdict-jackpot {
+  border-color: var(--accent);
+  background: rgba(240, 180, 41, 0.08);
+}
+.verdict-jackpot .verdict-title {
+  color: var(--accent);
+}
+.verdict-loss {
+  border-color: rgba(248, 81, 73, 0.5);
+}
+.verdict-win {
+  border-color: var(--accent-2);
+}
+
+.net-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 0.75rem;
+  background: var(--bg);
+}
+.net-card-value {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.net-card-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+.net-card.net-negative { border-color: rgba(248, 81, 73, 0.5); }
+.net-card.net-negative .net-card-value { color: #f85149; }
+.net-card.net-positive { border-color: rgba(63, 185, 80, 0.5); }
+.net-card.net-positive .net-card-value { color: var(--accent-2); }
+
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.sstat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  min-width: 0;
+}
+.sstat-value {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sstat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.sstat-pos .sstat-value { color: var(--accent-2); }
+.sstat-neg .sstat-value { color: #f85149; }
+
+/* tier breakdown table */
+.tier-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1.1rem;
+}
+.tier-heading {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+.tier-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+.tier-table th {
+  text-align: left;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 0.35rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.tier-table td {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.tier-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.tier-table .num {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.tier-table th:nth-child(n + 3) {
+  text-align: right;
+}
+.tier-key {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-weight: 700;
+  color: var(--accent);
+}
+.tier-empty {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* verdict-warn (invalid input) */
+.verdict-warn {
+  border-color: var(--accent);
 }
 
 /* jackpot celebration: gold flash on the heading */
@@ -297,14 +544,10 @@ h2 { margin-bottom: 1.5rem; }
   animation: jackpotFlash 1.6s ease-in-out 2;
 }
 
-/* net result line in the summary: color the verdict too */
-.sim-output .net-negative { color: #f85149; font-weight: 700; }
-.sim-output .net-positive { color: var(--accent-2); font-weight: 700; }
-
 @media (prefers-reduced-motion: reduce) {
   .sim-running .sim-live,
   .sim-running .sim-btn-stop:not(:disabled),
-  .sim-output,
+  .sim-summary,
   .sim.jackpot #sim-heading {
     animation: none;
   }

@@ -1,44 +1,77 @@
 // Interactive Powerball simulator — browser port of powerball.py.
-// Same rules: 5 white balls (1-69) + 1 red Powerball (1-26), drawings
-// twice a week (156/year). Runs live in the page until the jackpot is
-// hit or the user presses "Cash out".
+// Same rules as the real 2026 game: 5 white balls (1-69) + 1 red Powerball
+// (1-26), $2/ticket, drawings every Mon/Wed/Sat (156/year). Jackpot starts
+// at $20M and rolls over; all-time record $2.04B. Runs live in the page
+// until the jackpot is hit or the user presses "Cash out".
 
 (function () {
   "use strict";
 
   var WHITE_MAX = 69;
   var RED_MAX = 26;
-  var DRAWINGS_PER_YEAR = 156;
+  var DRAWINGS_PER_YEAR = 156; // Mon + Wed + Sat, every week
 
-  var TICKET_TIERS = ["5+P", "5", "4+P", "4", "3+P", "3", "2+P", "1+P", "P", "0"];
+  // Real 2026 Powerball prize table (fixed non-jackpot tiers).
+  var TIERS = [
+    { key: "5+P", whites: 5, red: true,  prize: null },      // jackpot
+    { key: "5",   whites: 5, red: false, prize: 1000000 },
+    { key: "4+P", whites: 4, red: true,  prize: 50000 },
+    { key: "4",   whites: 4, red: false, prize: 100 },
+    { key: "3+P", whites: 3, red: true,  prize: 100 },
+    { key: "3",   whites: 3, red: false, prize: 7 },
+    { key: "2+P", whites: 2, red: true,  prize: 7 },
+    { key: "1+P", whites: 1, red: true,  prize: 4 },
+    { key: "P",   whites: 0, red: true,  prize: 4 },
+    { key: "0",   whites: 0, red: false, prize: 0 },
+  ];
 
   // ---------- i18n (kept here so the sim is self-contained) ----------
   var simStrings = {
     en: {
-      jackpotHit: "🎉 JACKPOT HIT! 🎉",
-      cashedOut: "🛑 Cashed out early — here's what you have.",
+      jackpotHit: "🎉 JACKPOT HIT!",
+      jackpotHitSub: "After {years} years and {drawings} drawings, the jackpot finally landed.",
+      jackpotHitSub1: "After {years} years and 1 drawing, the jackpot finally landed.",
+      cashedOut: "🛑 Cashed out early",
+      cashedOutSub: "Here's what you walked away with.",
       ticketsPerDrawing: "Tickets per drawing",
-      ticketCost: "Ticket cost",
+      ticketCost: "Cost per ticket",
       drawingsPlayed: "Drawings played",
       timePlaying: "Time playing",
       totalInvested: "Total invested",
-      totalEarnings: "Total earnings",
+      totalEarnings: "Total won",
       netResult: "Net result",
       profit: "PROFIT",
       loss: "LOSS",
       bestSingleWin: "Best single win",
-      winsBreakdown: "Wins breakdown",
+      roi: "Return on spending",
+      winsBreakdown: "Prize breakdown",
+      tier: "Tier",
+      match: "Match",
+      wins: "Wins",
+      prizeEach: "Prize each",
+      tierTotal: "Total won",
+      jackpotLabel: "Jackpot",
+      noWins: "No winning tickets at all — brutal.",
+      match5PB: "5 + Powerball",
+      match5: "5 whites",
+      match4PB: "4 + Powerball",
+      match4: "4 whites",
+      match3PB: "3 + Powerball",
+      match3: "3 whites",
+      match2PB: "2 + Powerball",
+      match1PB: "1 + Powerball",
+      matchP: "Powerball only",
+      match0: "No match",
       years: "years",
       drawings: "drawings",
-      spent: "spent",
-      won: "won",
-      net: "net",
       invalidInput: "Tickets must be ≥ 1, cost ≥ $0.01, jackpot ≥ $1,000,000.",
-      running: "Running…",
     },
     es: {
-      jackpotHit: "🎉 ¡GANASTE EL POZO! 🎉",
-      cashedOut: "🛑 Retirado antes de tiempo — esto es lo que tienes.",
+      jackpotHit: "🎉 ¡GANASTE EL POZO!",
+      jackpotHitSub: "Tras {years} años y {drawings} sorteos, el pozo por fin cayó.",
+      jackpotHitSub1: "Tras {years} años y 1 sorteo, el pozo por fin cayó.",
+      cashedOut: "🛑 Retirado antes de tiempo",
+      cashedOutSub: "Esto es lo que te llevas.",
       ticketsPerDrawing: "Boletos por sorteo",
       ticketCost: "Costo por boleto",
       drawingsPlayed: "Sorteos jugados",
@@ -49,28 +82,77 @@
       profit: "GANANCIA",
       loss: "PÉRDIDA",
       bestSingleWin: "Mejor premio único",
+      roi: "Retorno sobre lo gastado",
       winsBreakdown: "Desglose de premios",
+      tier: "Nivel",
+      match: "Aciertos",
+      wins: "Veces",
+      prizeEach: "Premio",
+      tierTotal: "Total",
+      jackpotLabel: "Pozo",
+      noWins: "Ni un solo boleto ganador — brutal.",
+      match5PB: "5 + Powerball",
+      match5: "5 blancas",
+      match4PB: "4 + Powerball",
+      match4: "4 blancas",
+      match3PB: "3 + Powerball",
+      match3: "3 blancas",
+      match2PB: "2 + Powerball",
+      match1PB: "1 + Powerball",
+      matchP: "Solo Powerball",
+      match0: "Sin aciertos",
       years: "años",
       drawings: "sorteos",
-      spent: "gastado",
-      won: "ganado",
-      net: "neto",
       invalidInput: "Los boletos deben ser ≥ 1, el costo ≥ $0.01, el pozo ≥ $1,000,000.",
-      running: "Ejecutando…",
     },
   };
 
+  var MATCH_KEYS = {
+    "5+P": "match5PB", "5": "match5", "4+P": "match4PB", "4": "match4",
+    "3+P": "match3PB", "3": "match3", "2+P": "match2PB", "1+P": "match1PB",
+    "P": "matchP", "0": "match0",
+  };
+
+  function lang() {
+    return document.documentElement.lang === "es" ? "es" : "en";
+  }
   function t(key) {
-    var lang = document.documentElement.lang === "es" ? "es" : "en";
-    return simStrings[lang][key];
+    return simStrings[lang()][key];
   }
 
-  // ---------- helpers (mirror powerball.py) ----------
+  // ---------- formatting ----------
   function money(n) {
-    var sign = n < 0 ? "-" : "";
+    var sign = n < 0 ? "−" : "";
     return sign + "$" + Math.abs(Math.round(n)).toLocaleString("en-US");
   }
 
+  // Compact money for big numbers: $2.04B, $600M, $20M
+  function moneyCompact(n) {
+    var abs = Math.abs(n);
+    var sign = n < 0 ? "−" : "";
+    if (abs >= 1e9) return sign + "$" + trimZeros((abs / 1e9).toFixed(2)) + "B";
+    if (abs >= 1e6) return sign + "$" + trimZeros((abs / 1e6).toFixed(1)) + "M";
+    if (abs >= 1e4) return sign + "$" + trimZeros((abs / 1e3).toFixed(1)) + "K";
+    return money(n);
+  }
+  function trimZeros(s) {
+    return s.replace(/\.?0+$/, "");
+  }
+
+  function pct(n) {
+    var p = n * 100;
+    if (Math.abs(p) >= 1000) {
+      // Absurd ROI (e.g. hit the jackpot on ticket #1) — abbreviate
+      var sign = p < 0 ? "−" : "+";
+      var abs = Math.abs(p);
+      if (abs >= 1e9) return sign + trimZeros((abs / 1e9).toFixed(1)) + "B%";
+      if (abs >= 1e6) return sign + trimZeros((abs / 1e6).toFixed(1)) + "M%";
+      if (abs >= 1e3) return sign + trimZeros((abs / 1e3).toFixed(1)) + "K%";
+    }
+    return p.toFixed(1) + "%";
+  }
+
+  // ---------- helpers (mirror powerball.py) ----------
   function sampleWhites() {
     // random.sample(range(1, 70), k=5) equivalent
     var pool = [];
@@ -126,6 +208,7 @@
     tickets: document.getElementById("sim-tickets"),
     cost: document.getElementById("sim-cost"),
     jackpot: document.getElementById("sim-jackpot"),
+    presets: document.getElementById("sim-presets"),
     start: document.getElementById("sim-start"),
     stop: document.getElementById("sim-stop"),
     live: document.getElementById("sim-live"),
@@ -146,7 +229,7 @@
 
   function resetState(ticketsPerDrawing, ticketCost, jackpot) {
     var timesWon = {};
-    TICKET_TIERS.forEach(function (tier) { timesWon[tier] = 0; });
+    TIERS.forEach(function (tier) { timesWon[tier.key] = 0; });
     return {
       ticketsPerDrawing: ticketsPerDrawing,
       ticketCost: ticketCost,
@@ -161,13 +244,12 @@
   }
 
   function updateLive() {
-    var years = state.drawings / DRAWINGS_PER_YEAR;
-    el.liveYears.textContent = "⏳ " + years.toFixed(1) + "y";
-    el.liveDrawings.textContent = t("drawings") + " " + state.drawings.toLocaleString("en-US");
-    el.liveSpent.textContent = t("spent") + " " + money(state.totalSpent);
-    el.liveWon.textContent = t("won") + " " + money(state.earnings);
+    el.liveYears.textContent = (state.drawings / DRAWINGS_PER_YEAR).toFixed(1);
+    el.liveDrawings.textContent = state.drawings.toLocaleString("en-US");
+    el.liveSpent.textContent = moneyCompact(state.totalSpent);
+    el.liveWon.textContent = moneyCompact(state.earnings);
     var net = state.earnings - state.totalSpent;
-    el.liveNet.textContent = t("net") + " " + money(net);
+    el.liveNet.textContent = moneyCompact(net);
     el.liveNet.classList.toggle("net-negative", net < 0);
     el.liveNet.classList.toggle("net-positive", net >= 0);
 
@@ -219,7 +301,6 @@
     el.tickets.disabled = false;
     el.cost.disabled = false;
     el.jackpot.disabled = false;
-    el.section.classList.remove("sim-running");
 
     if (state.hitJackpot) {
       el.section.classList.add("jackpot");
@@ -231,46 +312,86 @@
     } else {
       if (window.MoneyRain) window.MoneyRain.stop();
     }
-    printSummary();
+    renderSummary();
   }
 
-  function printSummary() {
-    var lines = [];
-    lines.push("=".repeat(60));
-    lines.push(state.hitJackpot ? t("jackpotHit") : t("cashedOut"));
-    lines.push("=".repeat(60));
-    lines.push(t("ticketsPerDrawing") + " : " + state.ticketsPerDrawing.toLocaleString("en-US"));
-    lines.push(t("ticketCost") + " : " + money(state.ticketCost));
-    lines.push(t("drawingsPlayed") + " : " + state.drawings.toLocaleString("en-US"));
-    lines.push(t("timePlaying") + " : " + (state.drawings / DRAWINGS_PER_YEAR).toFixed(1) + " " + t("years"));
-    lines.push(t("totalInvested") + " : " + money(state.totalSpent));
-    lines.push(t("totalEarnings") + " : " + money(state.earnings));
+  // ---------- summary rendering (real cards, not ASCII art) ----------
+  function statCard(label, value, cls) {
+    return (
+      '<div class="sstat' + (cls ? " " + cls : "") + '">' +
+      '<span class="sstat-value">' + value + "</span>" +
+      '<span class="sstat-label">' + label + "</span>" +
+      "</div>"
+    );
+  }
+
+  function renderSummary() {
     var net = state.earnings - state.totalSpent;
-    var netLine = t("netResult") + " : " + money(net) + "  (" + (net >= 0 ? t("profit") : t("loss")) + ")";
-    lines.push({ html: '<span class="' + (net >= 0 ? "net-positive" : "net-negative") + '">' + escapeHtml(netLine) + "</span>" });
-    lines.push(t("bestSingleWin") + " : " + money(state.bestWin));
-    lines.push("");
-    lines.push(t("winsBreakdown") + ":");
-    TICKET_TIERS.forEach(function (tier) {
-      if (state.timesWon[tier]) {
-        lines.push("  " + tier + ": " + state.timesWon[tier].toLocaleString("en-US"));
-      }
+    var roi = state.totalSpent > 0 ? net / state.totalSpent : 0;
+    var years = (state.drawings / DRAWINGS_PER_YEAR).toFixed(1);
+
+    var verdictClass = state.hitJackpot ? "verdict-jackpot" : net >= 0 ? "verdict-win" : "verdict-loss";
+    var sub = state.hitJackpot
+      ? (state.drawings === 1 ? t("jackpotHitSub1") : t("jackpotHitSub"))
+          .replace("{years}", years).replace("{drawings}", state.drawings.toLocaleString("en-US"))
+      : t("cashedOutSub");
+
+    var html = "";
+    html += '<div class="verdict ' + verdictClass + '">';
+    html += '<span class="verdict-title">' + (state.hitJackpot ? t("jackpotHit") : t("cashedOut")) + "</span>";
+    html += '<span class="verdict-sub">' + sub + "</span>";
+    html += "</div>";
+
+    // Net result — the headline number
+    html +=
+      '<div class="net-card ' + (net >= 0 ? "net-positive" : "net-negative") + '">' +
+      '<span class="net-card-value">' + money(net) + "</span>" +
+      '<span class="net-card-label">' + t("netResult") + " · " + (net >= 0 ? t("profit") : t("loss")) + "</span>" +
+      "</div>";
+
+    // Stat grid
+    html += '<div class="summary-stats">';
+    html += statCard(t("drawingsPlayed"), state.drawings.toLocaleString("en-US"));
+    html += statCard(t("timePlaying"), years + " " + t("years"));
+    html += statCard(t("totalInvested"), money(state.totalSpent));
+    html += statCard(t("totalEarnings"), money(state.earnings));
+    html += statCard(t("bestSingleWin"), money(state.bestWin));
+    html += statCard(t("roi"), pct(roi), roi >= 0 ? "sstat-pos" : "sstat-neg");
+    html += "</div>";
+
+    // Tier breakdown table
+    var rows = "";
+    TIERS.forEach(function (tier) {
+      var count = state.timesWon[tier.key];
+      if (!count) return;
+      var prizeEach = tier.prize === null ? t("jackpotLabel") : money(tier.prize);
+      var tierTotal = tier.prize === null ? money(state.jackpot) : money(tier.prize * count);
+      rows +=
+        "<tr>" +
+        '<td class="tier-key">' + tier.key + "</td>" +
+        "<td>" + t(MATCH_KEYS[tier.key]) + "</td>" +
+        '<td class="num">' + count.toLocaleString("en-US") + "</td>" +
+        '<td class="num">' + prizeEach + "</td>" +
+        '<td class="num">' + tierTotal + "</td>" +
+        "</tr>";
     });
-    lines.push("=".repeat(60));
-    var html = lines
-      .map(function (line) {
-        return typeof line === "string" ? escapeHtml(line) : line.html;
-      })
-      .join("\n");
+
+    html += '<div class="tier-wrap">';
+    html += '<h3 class="tier-heading">' + t("winsBreakdown") + "</h3>";
+    if (rows) {
+      html +=
+        '<table class="tier-table"><thead><tr>' +
+        "<th>" + t("tier") + "</th><th>" + t("match") + "</th>" +
+        "<th>" + t("wins") + "</th><th>" + t("prizeEach") + "</th>" +
+        "<th>" + t("tierTotal") + "</th>" +
+        "</tr></thead><tbody>" + rows + "</tbody></table>";
+    } else {
+      html += '<p class="tier-empty">' + t("noWins") + "</p>";
+    }
+    html += "</div>";
+
     el.output.innerHTML = html;
     el.output.hidden = false;
-  }
-
-  function escapeHtml(s) {
-    return s
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
   }
 
   function readInputs() {
@@ -278,11 +399,29 @@
     var cost = parseFloat(el.cost.value);
     var jackpot = parseFloat(el.jackpot.value);
     if (!(tickets >= 1) || !(cost >= 0.01) || !(jackpot >= 1000000)) {
-      el.output.textContent = "⚠️ " + t("invalidInput");
+      el.output.innerHTML = '<div class="verdict verdict-warn">⚠️ ' + t("invalidInput") + "</div>";
       el.output.hidden = false;
       return null;
     }
     return { tickets: tickets, cost: cost, jackpot: jackpot };
+  }
+
+  // ---------- jackpot preset chips ----------
+  if (el.presets) {
+    el.presets.addEventListener("click", function (e) {
+      var chip = e.target.closest(".preset-chip");
+      if (!chip || running) return;
+      el.jackpot.value = chip.getAttribute("data-jackpot");
+      el.presets.querySelectorAll(".preset-chip").forEach(function (c) {
+        c.classList.toggle("active", c === chip);
+      });
+      el.jackpot.focus();
+    });
+    el.jackpot.addEventListener("input", function () {
+      el.presets.querySelectorAll(".preset-chip").forEach(function (c) {
+        c.classList.toggle("active", c.getAttribute("data-jackpot") === el.jackpot.value);
+      });
+    });
   }
 
   el.start.addEventListener("click", function () {
@@ -299,8 +438,14 @@
     el.tickets.disabled = true;
     el.cost.disabled = true;
     el.jackpot.disabled = true;
+    if (el.presets) {
+      el.presets.querySelectorAll(".preset-chip").forEach(function (c) {
+        c.classList.add("disabled");
+      });
+    }
 
     el.output.hidden = true;
+    el.output.innerHTML = "";
     el.live.hidden = false;
     el.section.classList.remove("jackpot");
     el.section.classList.add("sim-running");
@@ -315,4 +460,16 @@
     if (!running) return;
     stopRequested = true;
   });
+
+  // Re-render live labels + summary when the user switches language
+  // mid-run or after a run (fixes the mixed EN/ES output).
+  var langObserver = new MutationObserver(function () {
+    if (!state) return;
+    // Live bar labels are static [data-i18n] nodes — main.js retranslates
+    // them; here we only refresh the summary, which JS rendered.
+    if (!running && !el.output.hidden && el.output.innerHTML) {
+      renderSummary();
+    }
+  });
+  langObserver.observe(document.documentElement, { attributes: true, attributeFilter: ["lang"] });
 })();
