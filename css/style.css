@@ -93,6 +93,22 @@ h2 { margin-bottom: 1.5rem; }
 
 .card-scaffold { opacity: 0.85; }
 
+/* ---------- game country groups ---------- */
+.game-group { margin-top: 2.5rem; }
+.game-group:first-of-type { margin-top: 0; }
+
+.group-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.group-heading .flag { font-size: 1.3rem; }
+
 .card-link {
   color: var(--accent-2);
   text-decoration: none;
