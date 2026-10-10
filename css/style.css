@@ -25,6 +25,7 @@
 body,
 .card,
 .run,
+.sim,
 pre,
 .hero,
 footer {
@@ -123,6 +124,190 @@ h2 { margin-bottom: 1.5rem; }
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1.5rem;
+}
+
+/* ---------- interactive powerball simulator ---------- */
+.sim {
+  position: relative;
+  overflow: hidden;
+  margin-top: 3rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+/* Three.js money-rain canvas sits behind the sim content */
+#sim-rain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+#sim-rain.active { opacity: 1; }
+
+.sim > *:not(#sim-rain) {
+  position: relative;
+  z-index: 1;
+}
+
+.sim-intro {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+}
+
+.sim-config {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.25rem;
+}
+
+.sim-config label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.sim-config input {
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  width: 9.5rem;
+}
+.sim-config input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.sim-config input:disabled {
+  opacity: 0.6;
+}
+
+.sim-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sim-btn {
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.sim-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.sim-btn-start {
+  border-color: var(--accent-2);
+  color: var(--accent-2);
+}
+.sim-btn-start:hover:not(:disabled) {
+  background: var(--accent-2);
+  color: var(--bg);
+}
+
+.sim-btn-stop {
+  border-color: #f85149;
+  color: #f85149;
+}
+.sim-btn-stop:hover:not(:disabled) {
+  background: #f85149;
+  color: var(--bg);
+}
+
+.sim-live {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+/* net result coloring: losses in red, profit in green */
+#sim-live-net {
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+#sim-live-net.net-negative { color: #f85149; }
+#sim-live-net.net-positive { color: var(--accent-2); }
+
+/* live panel glows softly while the sim is running */
+@keyframes simGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 180, 41, 0); }
+  50% { box-shadow: 0 0 14px 2px rgba(240, 180, 41, 0.25); }
+}
+.sim-running .sim-live {
+  animation: simGlow 2s ease-in-out infinite;
+}
+
+/* cash-out button pulses while waiting to be pressed */
+@keyframes stopPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+.sim-running .sim-btn-stop:not(:disabled) {
+  animation: stopPulse 1.2s ease-in-out infinite;
+}
+
+/* summary slides up into view */
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.sim-output {
+  margin-top: 0;
+  white-space: pre-wrap;
+  animation: riseIn 0.45s ease both;
+}
+
+/* jackpot celebration: gold flash on the heading */
+@keyframes jackpotFlash {
+  0%, 100% { color: inherit; text-shadow: none; }
+  25% { color: var(--accent); text-shadow: 0 0 18px rgba(240, 180, 41, 0.7); }
+  50% { color: inherit; text-shadow: none; }
+  75% { color: var(--accent); text-shadow: 0 0 18px rgba(240, 180, 41, 0.7); }
+}
+.sim.jackpot #sim-heading {
+  animation: jackpotFlash 1.6s ease-in-out 2;
+}
+
+/* net result line in the summary: color the verdict too */
+.sim-output .net-negative { color: #f85149; font-weight: 700; }
+.sim-output .net-positive { color: var(--accent-2); font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sim-running .sim-live,
+  .sim-running .sim-btn-stop:not(:disabled),
+  .sim-output,
+  .sim.jackpot #sim-heading {
+    animation: none;
+  }
 }
 
 pre {
