@@ -20,6 +20,14 @@ const translations = {
       "Deprecated — the Telebingo reglamento arrived and the game was split into telebingo.py (implemented) and senete.py (scaffold). Kept for history.",
     readmeDesc: "Project documentation: how each simulation works and how to run it.",
     viewSource: "View source →",
+    tryInBrowser: "Try it in the browser ↓",
+    simHeading: "🎮 Try powerball.py in your browser",
+    simIntro: "The same simulation as powerball.py, running right here: pick your settings, press Start, and watch the years roll by. Press Cash out any time to stop and see your results.",
+    simTickets: "Tickets per drawing",
+    simCost: "Cost per ticket ($)",
+    simJackpot: "Jackpot ($)",
+    simStart: "▶ Start",
+    simStop: "🛑 Cash out",
     runItYourself: "Run it yourself",
     builtWith: "Built with",
     simsInPython: "simulations in Python",
@@ -34,8 +42,6 @@ const translations = {
     docs: "Documentación",
     powerballDesc:
       "Simulación de Powerball (EE.UU.): 5 bolas blancas (1–69) + 1 Powerball roja (1–26), $2 por boleto. Compra 100 boletos por sorteo, 2 sorteos por semana, hasta ganar el pozo de $2 mil millones — luego reporta lo gastado vs. lo ganado y el desglose por nivel de premio.",
-    powerballDesc:
-      "Simulación de Powerball (EE.UU.): 5 bolas blancas (1–69) + 1 Powerball roja (1–26), $2 por boleto. Compra 100 boletos por sorteo, 2 sorteos por semana, hasta ganar el pozo de $2 mil millones — luego reporta lo gastado vs. lo ganado y el desglose por nivel de premio.",
     telebingoDesc:
       "Telebingo de Canal 9 TV Cerro Corá (GAMBLING S.A. / Conajzar): cartones con números 01–25. Sorteos GRANDIOSO, PODEROSO y DOBLE CHANCE — 12, 12 y 15 bolillas respectivamente, con premios por nivel y solo el nivel más alto paga por sorteo.",
     seneteDesc:
@@ -44,6 +50,14 @@ const translations = {
       "Obsoleto — llegó el reglamento de Telebingo y el juego se dividió en telebingo.py (implementado) y senete.py (estructura base). Se conserva por historial.",
     readmeDesc: "Documentación del proyecto: cómo funciona cada simulación y cómo ejecutarla.",
     viewSource: "Ver código →",
+    tryInBrowser: "Pruébalo en el navegador ↓",
+    simHeading: "🎮 Prueba powerball.py en tu navegador",
+    simIntro: "La misma simulación que powerball.py, corriendo aquí mismo: elige tus ajustes, pulsa Iniciar y mira pasar los años. Pulsa Retirarte en cualquier momento para detenerte y ver tus resultados.",
+    simTickets: "Boletos por sorteo",
+    simCost: "Costo por boleto ($)",
+    simJackpot: "Pozo ($)",
+    simStart: "▶ Iniciar",
+    simStop: "🛑 Retirarme",
     runItYourself: "Ejecútalo tú mismo",
     builtWith: "Construido con",
     simsInPython: "simulaciones en Python",

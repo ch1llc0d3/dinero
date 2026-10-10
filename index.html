@@ -35,6 +35,7 @@
             <span class="card-icon">🐍</span>
             <h3>powerball.py</h3>
             <p data-i18n="powerballDesc">US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket. Buys 100 tickets per drawing, 2 drawings/week, until the $2B jackpot is hit — then reports spent vs. earnings and a win-tier breakdown.</p>
+            <a class="card-link" href="#powerball-sim" data-i18n="tryInBrowser">Try it in the browser ↓</a>
             <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/powerball.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
           </article>
         </div>
@@ -79,6 +80,40 @@
       </section>
     </section>
 
+    <section id="powerball-sim" class="sim" aria-labelledby="sim-heading">
+      <h2 id="sim-heading" data-i18n="simHeading">🎮 Try powerball.py in your browser</h2>
+      <p class="sim-intro" data-i18n="simIntro">The same simulation as powerball.py, running right here: pick your settings, press Start, and watch the years roll by. Press Cash out any time to stop and see your results.</p>
+
+      <div class="sim-config">
+        <label>
+          <span data-i18n="simTickets">Tickets per drawing</span>
+          <input type="number" id="sim-tickets" min="1" step="1" value="100" />
+        </label>
+        <label>
+          <span data-i18n="simCost">Cost per ticket ($)</span>
+          <input type="number" id="sim-cost" min="0.01" step="0.01" value="2" />
+        </label>
+        <label>
+          <span data-i18n="simJackpot">Jackpot ($)</span>
+          <input type="number" id="sim-jackpot" min="1000000" step="1000000" value="2000000000" />
+        </label>
+        <div class="sim-buttons">
+          <button id="sim-start" type="button" class="sim-btn sim-btn-start" data-i18n="simStart">▶ Start</button>
+          <button id="sim-stop" type="button" class="sim-btn sim-btn-stop" data-i18n="simStop" disabled>🛑 Cash out</button>
+        </div>
+      </div>
+
+      <div class="sim-live" id="sim-live" hidden>
+        <span id="sim-live-years">⏳ 0.0y</span>
+        <span id="sim-live-drawings">drawings 0</span>
+        <span id="sim-live-spent">spent $0</span>
+        <span id="sim-live-won">won $0</span>
+        <span id="sim-live-net">net $0</span>
+      </div>
+
+      <pre id="sim-output" class="sim-output" hidden></pre>
+    </section>
+
     <section class="run">
       <h2 data-i18n="runItYourself">Run it yourself</h2>
       <pre><code>git clone https://github.com/ch1llc0d3/dinero.git
@@ -92,5 +127,6 @@ python3 powerball.py</code></pre>
   </footer>
 
   <script src="js/main.js"></script>
+  <script src="js/powerball-sim.js"></script>
 </body>
 </html>
