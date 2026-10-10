@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dinero — Lottery Probability Simulations</title>
+  <meta name="description" content="dinero: Python simulations that answer one question — how much money do you actually make (or lose) playing the lottery?" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <h1>💰 dinero</h1>
+    <p class="tagline">Lottery probability simulations — how much money do you actually make (or lose) playing?</p>
+    <a class="cta" href="#parts">Explore the project ↓</a>
+  </header>
+
+  <main>
+    <section id="parts" class="parts">
+      <h2>What's inside</h2>
+      <div class="cards">
+        <article class="card">
+          <span class="card-icon">🐍</span>
+          <h3>powerball.py</h3>
+          <p>US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket. Buys 100 tickets per drawing, 2 drawings/week, until the $2B jackpot is hit — then reports spent vs. earnings and a win-tier breakdown.</p>
+          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/powerball.py" target="_blank" rel="noopener">View source →</a>
+        </article>
+
+        <article class="card card-scaffold">
+          <span class="card-icon">🎲</span>
+          <h3>binguito.py</h3>
+          <p>Paraguayan Binguito simulation — scaffold. Waiting on the actual game rules (ball pools, prize table, ticket cost, drawing frequency) before implementing.</p>
+          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/binguito.py" target="_blank" rel="noopener">View source →</a>
+        </article>
+
+        <article class="card">
+          <span class="card-icon">📄</span>
+          <h3>README.md</h3>
+          <p>Project documentation: how each simulation works and how to run it.</p>
+          <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/README.md" target="_blank" rel="noopener">View source →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="run">
+      <h2>Run it yourself</h2>
+      <pre><code>git clone https://github.com/ch1llc0d3/dinero.git
+cd dinero
+python3 powerball.py</code></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built with <span class="tech">HTML</span> · <span class="tech">CSS</span> · <span class="tech">JavaScript</span> — simulations in Python</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
