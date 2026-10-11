@@ -34,7 +34,7 @@
           <article class="card">
             <span class="card-icon">🐍</span>
             <h3>powerball.py</h3>
-            <p data-i18n="powerballDesc">US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket. Buys 100 tickets per drawing, 2 drawings/week, until the $2B jackpot is hit — then reports spent vs. earnings and a win-tier breakdown.</p>
+            <p data-i18n="powerballDesc">US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket (2026 price). Drawings every Mon/Wed/Sat — 156/year. The jackpot starts at $20M and rolls over until hit; the all-time record is $2.04B. Buys 100 tickets per drawing until the jackpot lands, then reports spent vs. earnings and a win-tier breakdown.</p>
             <a class="card-link" href="#powerball-sim" data-i18n="tryInBrowser">Try it in the browser ↓</a>
             <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/powerball.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
           </article>
@@ -85,6 +85,25 @@
       <h2 id="sim-heading" data-i18n="simHeading">🎮 Try powerball.py in your browser</h2>
       <p class="sim-intro" data-i18n="simIntro">The same simulation as powerball.py, running right here: pick your settings, press Start, and watch the years roll by. Press Cash out any time to stop and see your results.</p>
 
+      <div class="sim-facts" role="list" aria-label="Powerball facts (2026)">
+        <div class="fact" role="listitem">
+          <span class="fact-value">$2</span>
+          <span class="fact-label" data-i18n="factTicket">per ticket — 2026 price</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">3<span class="fact-per">/</span>week</span>
+          <span class="fact-label" data-i18n="factDrawings">drawings — Mon · Wed · Sat</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">1 <span class="fact-per">in</span> 292.2M</span>
+          <span class="fact-label" data-i18n="factOddsJackpot">odds of the jackpot</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">1 <span class="fact-per">in</span> 24.9</span>
+          <span class="fact-label" data-i18n="factOddsAny">odds of winning any prize</span>
+        </div>
+      </div>
+
       <div class="sim-config">
         <label>
           <span data-i18n="simTickets">Tickets per drawing</span>
@@ -94,9 +113,9 @@
           <span data-i18n="simCost">Cost per ticket ($)</span>
           <input type="number" id="sim-cost" min="0.01" step="0.01" value="2" />
         </label>
-        <label>
+        <label class="sim-jackpot-label">
           <span data-i18n="simJackpot">Jackpot ($)</span>
-          <input type="number" id="sim-jackpot" min="1000000" step="1000000" value="2000000000" />
+          <input type="number" id="sim-jackpot" min="1000000" step="1000000" value="600000000" />
         </label>
         <div class="sim-buttons">
           <button id="sim-start" type="button" class="sim-btn sim-btn-start" data-i18n="simStart">▶ Start</button>
@@ -104,15 +123,38 @@
         </div>
       </div>
 
-      <div class="sim-live" id="sim-live" hidden>
-        <span id="sim-live-years">⏳ 0.0y</span>
-        <span id="sim-live-drawings">drawings 0</span>
-        <span id="sim-live-spent">spent $0</span>
-        <span id="sim-live-won">won $0</span>
-        <span id="sim-live-net">net $0</span>
+      <div class="sim-presets" id="sim-presets" aria-label="Jackpot presets">
+        <button type="button" class="preset-chip" data-jackpot="20000000" data-i18n-title="presetMin">$20M</button>
+        <button type="button" class="preset-chip" data-jackpot="100000000" data-i18n-title="presetTypical">$100M</button>
+        <button type="button" class="preset-chip active" data-jackpot="600000000" data-i18n-title="presetBig2026">$600M</button>
+        <button type="button" class="preset-chip" data-jackpot="1000000000" data-i18n-title="presetBillion">$1B</button>
+        <button type="button" class="preset-chip" data-jackpot="2040000000" data-i18n-title="presetRecord">$2.04B 🏆</button>
       </div>
 
-      <pre id="sim-output" class="sim-output" hidden></pre>
+      <div class="sim-live" id="sim-live" hidden>
+        <div class="stat">
+          <span class="stat-value" id="sim-live-years">0.0</span>
+          <span class="stat-label" data-i18n="statYears">years</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="sim-live-drawings">0</span>
+          <span class="stat-label" data-i18n="statDrawings">drawings</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="sim-live-spent">$0</span>
+          <span class="stat-label" data-i18n="statSpent">spent</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="sim-live-won">$0</span>
+          <span class="stat-label" data-i18n="statWon">won</span>
+        </div>
+        <div class="stat stat-net">
+          <span class="stat-value" id="sim-live-net">$0</span>
+          <span class="stat-label" data-i18n="statNet">net</span>
+        </div>
+      </div>
+
+      <div id="sim-output" class="sim-summary" hidden></div>
     </section>
 
     <section class="run">

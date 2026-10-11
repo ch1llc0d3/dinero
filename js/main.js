@@ -11,7 +11,7 @@ const translations = {
     paraguayGames: "Paraguay games",
     docs: "Docs",
     powerballDesc:
-      "US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket. Buys 100 tickets per drawing, 2 drawings/week, until the $2B jackpot is hit — then reports spent vs. earnings and a win-tier breakdown.",
+      "US Powerball simulation: 5 white balls (1–69) + 1 red Powerball (1–26), $2/ticket (2026 price). Drawings every Mon/Wed/Sat — 156/year. The jackpot starts at $20M and rolls over until hit; the all-time record is $2.04B. Buys 100 tickets per drawing until the jackpot lands, then reports spent vs. earnings and a win-tier breakdown.",
     telebingoDesc:
       "Telebingo de Canal 9 TV Cerro Corá (GAMBLING S.A. / Conajzar): cartones with 01–25 numbers. GRANDIOSO, PODEROSO and DOBLE CHANCE draws — 12, 12 and 15 balls respectively, with per-tier wins and only the highest tier paying per drawing.",
     seneteDesc:
@@ -28,6 +28,20 @@ const translations = {
     simJackpot: "Jackpot ($)",
     simStart: "▶ Start",
     simStop: "🛑 Cash out",
+    statYears: "years",
+    statDrawings: "drawings",
+    statSpent: "spent",
+    statWon: "won",
+    statNet: "net",
+    factTicket: "per ticket — 2026 price",
+    factDrawings: "drawings — Mon · Wed · Sat",
+    factOddsJackpot: "odds of the jackpot",
+    factOddsAny: "odds of winning any prize",
+    presetMin: "Minimum starting jackpot ($20M)",
+    presetTypical: "Typical winning jackpot (~$100M)",
+    presetBig2026: "2026's biggest run ($600M, July)",
+    presetBillion: "Billion-dollar jackpot ($1B, Aug 2026)",
+    presetRecord: "All-time record — $2.04B, Nov 2022",
     runItYourself: "Run it yourself",
     builtWith: "Built with",
     simsInPython: "simulations in Python",
@@ -41,7 +55,7 @@ const translations = {
     paraguayGames: "Juegos de Paraguay",
     docs: "Documentación",
     powerballDesc:
-      "Simulación de Powerball (EE.UU.): 5 bolas blancas (1–69) + 1 Powerball roja (1–26), $2 por boleto. Compra 100 boletos por sorteo, 2 sorteos por semana, hasta ganar el pozo de $2 mil millones — luego reporta lo gastado vs. lo ganado y el desglose por nivel de premio.",
+      "Simulación de Powerball (EE.UU.): 5 bolas blancas (1–69) + 1 Powerball roja (1–26), $2 por boleto (precio 2026). Sorteos cada lunes/miércoles/sábado — 156 al año. El pozo arranca en $20M y acumula hasta que cae; el récord histórico es $2.04B. Compra 100 boletos por sorteo hasta ganar el pozo — luego reporta lo gastado vs. lo ganado y el desglose por nivel de premio.",
     telebingoDesc:
       "Telebingo de Canal 9 TV Cerro Corá (GAMBLING S.A. / Conajzar): cartones con números 01–25. Sorteos GRANDIOSO, PODEROSO y DOBLE CHANCE — 12, 12 y 15 bolillas respectivamente, con premios por nivel y solo el nivel más alto paga por sorteo.",
     seneteDesc:
@@ -58,6 +72,20 @@ const translations = {
     simJackpot: "Pozo ($)",
     simStart: "▶ Iniciar",
     simStop: "🛑 Retirarme",
+    statYears: "años",
+    statDrawings: "sorteos",
+    statSpent: "gastado",
+    statWon: "ganado",
+    statNet: "neto",
+    factTicket: "por boleto — precio 2026",
+    factDrawings: "sorteos — lun · mié · sáb",
+    factOddsJackpot: "probabilidad del pozo",
+    factOddsAny: "probabilidad de ganar algo",
+    presetMin: "Pozo mínimo inicial ($20M)",
+    presetTypical: "Pozo típico al ganar (~$100M)",
+    presetBig2026: "El mayor pozo de 2026 ($600M, julio)",
+    presetBillion: "Pozo de mil millones ($1B, ago 2026)",
+    presetRecord: "Récord histórico — $2.04B, nov 2022",
     runItYourself: "Ejecútalo tú mismo",
     builtWith: "Construido con",
     simsInPython: "simulaciones en Python",
@@ -68,6 +96,10 @@ function applyLang(lang) {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     if (translations[lang][key]) el.textContent = translations[lang][key];
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-title");
+    if (translations[lang][key]) el.setAttribute("title", translations[lang][key]);
   });
   document.documentElement.lang = lang;
   localStorage.setItem("dinero-lang", lang);
