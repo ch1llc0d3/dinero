@@ -1,89 +1,109 @@
-// Interactive Seneté demo — NOT a port of senete.py (that's still a
-// scaffold waiting on the real rules). This is a demo of the classic
-// animal-lottery mechanic with clearly-labeled ASSUMED rules:
-//   - 25 animals in the pool
-//   - 1 animal drawn per sorteo
-//   - a hit pays 20× the bet (house edge 20%)
-// All parameters are placeholders until the actual Seneté reglamento
-// arrives; the facts row on the page says so too.
+// Interactive Seneté sim — REAL 2026 RULES (see docs/senete-rules-2026.md).
+// Numbers 1–25, no animals. A cartón has two independent 12-number grids
+// (GRANDIOSO / PODEROSO) and two independent 15-number grids (DOBLE CHANCE).
+// Four jugadas per weekly sorteo; progressive pozos; 8% IRP on prizes
+// ≥ ₲500.000. Assumed values (pozo bases, growth, vehicle value) are
+// labeled ASSUMED in the UI.
 
 (function () {
   "use strict";
 
-  var POOL_SIZE = 25;
-  var PAYOUT_MULT = 20;
-  var SORTEOS_PER_TICK = 6; // sorteos per 16ms tick ≈ 375/s — fast but readable
+  var POOL = 25;
+  var GRIDS_12 = 2;
+  var GRIDS_15 = 2;
+  var PRICE = 10_000;
+  var CARTON_VALUE = 10_000;
 
-  // The classic 25-animal pool (0–24), as used by animalito lotteries.
-  var ANIMALS = [
-    { n: 0, name: "Delfín", emoji: "🐬" },
-    { n: 1, name: "Carnero", emoji: "🐏" },
-    { n: 2, name: "Toro", emoji: "🐂" },
-    { n: 3, name: "Ciempiés", emoji: "🐛" },
-    { n: 4, name: "Alacrán", emoji: "🦂" },
-    { n: 5, name: "León", emoji: "🦁" },
-    { n: 6, name: "Rana", emoji: "🐸" },
-    { n: 7, name: "Perico", emoji: "🦜" },
-    { n: 8, name: "Ratón", emoji: "🐭" },
-    { n: 9, name: "Águila", emoji: "🦅" },
-    { n: 10, name: "Tigre", emoji: "🐯" },
-    { n: 11, name: "Gato", emoji: "🐱" },
-    { n: 12, name: "Caballo", emoji: "🐴" },
-    { n: 13, name: "Mono", emoji: "🐵" },
-    { n: 14, name: "Paloma", emoji: "🕊️" },
-    { n: 15, name: "Zorro", emoji: "🦊" },
-    { n: 16, name: "Oso", emoji: "🐻" },
-    { n: 17, name: "Pavo", emoji: "🦃" },
-    { n: 18, name: "Burro", emoji: "🫏" },
-    { n: 19, name: "Chivo", emoji: "🐐" },
-    { n: 20, name: "Cerdo", emoji: "🐷" },
-    { n: 21, name: "Gallo", emoji: "🐓" },
-    { n: 22, name: "Camello", emoji: "🐫" },
-    { n: 23, name: "Cebra", emoji: "🦓" },
-    { n: 24, name: "Iguana", emoji: "🦎" },
-  ];
+  // --- Prize tables (Gs.) — from published 2026 results ---
+  var PODEROSO = {
+    12: 1_000_000_000, // base; +100M per unwon week (inferred)
+    11: 2_000_000,
+    10: 50_000,
+    9: CARTON_VALUE, 3: CARTON_VALUE, 2: CARTON_VALUE, 1: CARTON_VALUE,
+    0: 2_000_000,
+  };
+  var GRANDIOSO_11 = 2_000_000;
+  var DOBLE = { 14: 2_000_000, 13: 50_000, 12: CARTON_VALUE };
+
+  // --- Pozos (ASSUMED bases/growth) ---
+  var POZO_BASE = 100_000_000;
+  var POZO_GROWTH = 10_000_000;
+  var PODEROSO_STEP = 100_000_000;
+
+  // --- Jugada 4: cartones al azar (menu from 2026 draws; vehicle ASSUMED) ---
+  var AZAR_P = 116 / 175_000;
+  var AZAR_MENU = [];
+  for (var i = 0; i < 100; i++) AZAR_MENU.push(500_000);
+  for (i = 0; i < 10; i++) AZAR_MENU.push(10_000_000);
+  for (i = 0; i < 5; i++) AZAR_MENU.push(20_000_000);
+  AZAR_MENU.push(150_000_000); // vehicle, ASSUMED value
+
+  var TAX_THRESHOLD = 500_000;
+  var TAX_RATE = 0.08;
 
   // ---------- i18n (kept here so the sim is self-contained) ----------
   var simStrings = {
     en: {
       cashedOut: "🛑 Cashed out early",
       cashedOutSub: "Here's what you walked away with.",
-      betPerSorteo: "Bet per sorteo (₲)",
-      sorteosPlayed: "Sorteos played",
+      cartonesPerSorteo: "Cartones per sorteo (₲10.000 each)",
+      weeks: "sorteos (weeks)",
+      cartonesPlayed: "cartones played",
       totalInvested: "Total invested",
       totalEarnings: "Total won",
       netResult: "Net result",
       profit: "PROFIT",
       loss: "LOSS",
-      hits: "Hits",
-      hitRate: "Hit rate",
-      expectedRate: "Expected 4.0% (1 in 25)",
-      roi: "Return on betting",
-      bestStreak: "Longest dry spell",
-      sorteosBetween: "sorteos between hits",
-      noHits: "Not a single hit — that's the 20% house edge at work.",
-      invalidInput: "Pick an animal and bet ≥ ₲100.",
-      assumed: "assumed rules",
+      roi: "Return on spend",
+      bestTier: "Best tier won",
+      none: "none",
+      grandioso: "GRANDIOSO — 12 of 25",
+      poderoso: "PODEROSO — 12 of 25",
+      doble: "DOBLE CHANCE — 15 of 25",
+      pozo: "POZO",
+      jackpot: "JACKPOT",
+      pozoNow: "Current pozos",
+      grandiosoPozo: "Grandioso POZO",
+      doblePozo: "Doble Chance POZO",
+      poderosoJackpot: "Poderoso jackpot",
+      assumed: "assumed values",
+      hitsLabel: "hits",
+      zeroHits: "0-hits consolations",
+      freeCartons: "free cartons won",
+      azarWins: "cartones-al-azar wins",
+      invalidInput: "Buy at least 1 cartón per sorteo.",
+      taxNote: "8% IRP withheld on prizes ≥ ₲500.000 (Ley 6380/2019).",
     },
     es: {
       cashedOut: "🛑 Retirado antes de tiempo",
       cashedOutSub: "Esto es lo que te llevas.",
-      betPerSorteo: "Apuesta por sorteo (₲)",
-      sorteosPlayed: "Sorteos jugados",
+      cartonesPerSorteo: "Cartones por sorteo (₲10.000 c/u)",
+      weeks: "sorteos (semanas)",
+      cartonesPlayed: "cartones jugados",
       totalInvested: "Total invertido",
       totalEarnings: "Total ganado",
       netResult: "Resultado neto",
       profit: "GANANCIA",
       loss: "PÉRDIDA",
-      hits: "Aciertos",
-      hitRate: "Tasa de acierto",
-      expectedRate: "Esperado 4.0% (1 en 25)",
-      roi: "Retorno sobre lo apostado",
-      bestStreak: "Racha más seca",
-      sorteosBetween: "sorteos entre aciertos",
-      noHits: "Ni un solo acierto — así trabaja el 20% de ventaja de la casa.",
-      invalidInput: "Elige un animal y apuesta ≥ ₲100.",
-      assumed: "reglas supuestas",
+      roi: "Retorno sobre lo invertido",
+      bestTier: "Mejor tier ganado",
+      none: "ninguno",
+      grandioso: "GRANDIOSO — 12 de 25",
+      poderoso: "PODEROSO — 12 de 25",
+      doble: "DOBLE CHANCE — 15 de 25",
+      pozo: "POZO",
+      jackpot: "JACKPOT",
+      pozoNow: "Pozos actuales",
+      grandiosoPozo: "POZO Grandioso",
+      doblePozo: "POZO Doble Chance",
+      poderosoJackpot: "Jackpot Poderoso",
+      assumed: "valores supuestos",
+      hitsLabel: "aciertos",
+      zeroHits: "consolaciones de 0 aciertos",
+      freeCartons: "cartones gratis ganados",
+      azarWins: "premios cartones al azar",
+      invalidInput: "Compra al menos 1 cartón por sorteo.",
+      taxNote: "8% de IRP retenido en premios ≥ ₲500.000 (Ley 6380/2019).",
     },
   };
 
@@ -99,7 +119,6 @@
     var sign = n < 0 ? "−" : "";
     return sign + "₲" + Math.abs(Math.round(n)).toLocaleString("es-PY");
   }
-
   function moneyCompact(n) {
     var abs = Math.abs(n);
     var sign = n < 0 ? "−" : "";
@@ -111,127 +130,188 @@
   function trimZeros(s) {
     return s.replace(/\.?0+$/, "");
   }
-
   function pct(n) {
-    return (n * 100).toFixed(1) + "%";
+    return (n * 100).toFixed(2) + "%";
   }
 
   // ---------- DOM ----------
   var el = {
-    grid: document.getElementById("sn-grid"),
-    bet: document.getElementById("sn-bet"),
+    bet: document.getElementById("sn-cartones"),
     start: document.getElementById("sn-start"),
     stop: document.getElementById("sn-stop"),
-    drawWrap: document.getElementById("sn-draw-wrap"),
-    drawStrip: document.getElementById("sn-draw-strip"),
+    draws: document.getElementById("sn-draws"),
+    drawG: document.getElementById("sn-balls-g"),
+    drawP: document.getElementById("sn-balls-p"),
+    drawD: document.getElementById("sn-balls-d"),
     live: document.getElementById("sn-live"),
-    liveSorteos: document.getElementById("sn-live-sorteos"),
-    liveHits: document.getElementById("sn-live-hits"),
+    liveWeeks: document.getElementById("sn-live-weeks"),
+    liveCartones: document.getElementById("sn-live-cartones"),
     liveSpent: document.getElementById("sn-live-spent"),
     liveWon: document.getElementById("sn-live-won"),
     liveNet: document.getElementById("sn-live-net"),
+    pozos: document.getElementById("sn-pozos"),
+    pozoG: document.getElementById("sn-pozo-g"),
+    pozoD: document.getElementById("sn-pozo-d"),
+    pozoP: document.getElementById("sn-pozo-p"),
     output: document.getElementById("sn-output"),
-    section: document.getElementById("senete-sim"),
   };
-  if (!el.grid) return; // sim section not present
+  if (!el.drawG) return; // sim section not present
 
-  var picked = null; // animal number the player picked
   var running = false;
   var stopRequested = false;
   var state = null;
   var timer = null;
-  var stripCells = [];
 
-  // ---------- build the animal grid ----------
-  ANIMALS.forEach(function (animal) {
-    var cell = document.createElement("button");
-    cell.type = "button";
-    cell.className = "sn-cell";
-    cell.setAttribute("role", "option");
-    cell.setAttribute("aria-selected", "false");
-    cell.title = animal.n + " · " + animal.name;
-    cell.innerHTML =
-      '<span class="sn-cell-emoji">' + animal.emoji + "</span>" +
-      '<span class="sn-cell-num">' + String(animal.n).padStart(2, "0") + "</span>";
-    cell.addEventListener("click", function () {
-      if (running) return;
-      picked = animal.n;
-      Array.prototype.forEach.call(el.grid.children, function (c) {
-        c.classList.remove("picked");
-        c.setAttribute("aria-selected", "false");
-      });
-      cell.classList.add("picked");
-      cell.setAttribute("aria-selected", "true");
-    });
-    el.grid.appendChild(cell);
-  });
-
-  // Pre-seed the draw strip with empty slots (filled live during runs).
-  var STRIP_LEN = 12;
-  for (var i = 0; i < STRIP_LEN; i++) {
-    var slot = document.createElement("span");
-    slot.className = "sn-draw-slot";
-    el.drawStrip.appendChild(slot);
-    stripCells.push(slot);
+  function sample(n) {
+    // Fisher-Yates partial shuffle over 1..25 — fast distinct sample
+    var pool = new Array(POOL);
+    for (var i = 0; i < POOL; i++) pool[i] = i + 1;
+    for (i = 0; i < n; i++) {
+      var j = i + Math.floor(Math.random() * (POOL - i));
+      var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+    return pool.slice(0, n);
   }
 
-  function pushDraw(animalNum) {
-    var a = ANIMALS[animalNum];
-    var dropped = stripCells.pop();
-    if (dropped) dropped.remove();
-    var slot = document.createElement("span");
-    slot.className = "sn-draw-slot" + (animalNum === picked ? " sn-draw-hit" : "");
-    slot.textContent = a.emoji;
-    slot.title = a.n + " · " + a.name;
-    el.drawStrip.insertBefore(slot, el.drawStrip.firstChild);
-    stripCells.unshift(slot);
+  function makeGrid(size) {
+    return sample(size);
+  }
+
+  function countHits(grid, ballsSet) {
+    var hits = 0;
+    for (var i = 0; i < grid.length; i++) {
+      if (ballsSet.has(grid[i])) hits++;
+    }
+    return hits;
+  }
+
+  function afterTax(amount) {
+    return amount >= TAX_THRESHOLD ? Math.round(amount * (1 - TAX_RATE)) : amount;
+  }
+
+  function renderBalls(container, balls) {
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < balls.length; i++) {
+      var b = document.createElement("span");
+      b.className = "sn-ball";
+      b.textContent = String(balls[i]).padStart(2, "0");
+      frag.appendChild(b);
+    }
+    container.replaceChildren(frag);
   }
 
   // ---------- state ----------
-  function resetState(bet) {
+  function resetState(cartones) {
     return {
-      bet: bet,
-      sorteos: 0,
-      hits: 0,
+      cartones: cartones,
+      weeks: 0,
+      cartonesPlayed: 0,
       totalSpent: 0,
       earnings: 0,
-      sinceHit: 0,
-      longestDry: 0,
+      grandiosoPozo: POZO_BASE,
+      doblePozo: POZO_BASE,
+      poderosoJackpot: PODEROSO[12],
+      tiers: {},          // "jugada:tier" -> count
+      bestTier: null,     // {jugada, hits, amount}
+      zeroHits: 0,
+      freeCartons: 0,
+      azarWins: 0,
     };
   }
 
+  function tierKey(jugada, hits) {
+    return jugada + ":" + hits;
+  }
+
+  function award(st, jugada, hits, amount, isPozo) {
+    st.earnings += amount;
+    var key = tierKey(jugada, hits);
+    st.tiers[key] = (st.tiers[key] || 0) + 1;
+    var label = isPozo ? (jugada === "poderoso" ? t("jackpot") : t("pozo"))
+      : hits + " " + t("hitsLabel");
+    var value = amount;
+    if (!st.bestTier || value > st.bestTier.amount) {
+      st.bestTier = { jugada: jugada, label: label, amount: value };
+    }
+  }
+
+  function playWeek(st) {
+    st.weeks++;
+    st.cartonesPlayed += st.cartones;
+    st.totalSpent += st.cartones * PRICE;
+
+    var ballsG = sample(12), ballsP = sample(12), ballsD = sample(15);
+    var setG = new Set(ballsG), setP = new Set(ballsP), setD = new Set(ballsD);
+
+    for (var c = 0; c < st.cartones; c++) {
+      for (var g = 0; g < GRIDS_12; g++) {
+        var grid = makeGrid(12);
+        // GRANDIOSO
+        var hits = countHits(grid, setG);
+        if (hits === 12) {
+          award(st, "grandioso", 12, afterTax(st.grandiosoPozo), true);
+          st.grandiosoPozo = POZO_BASE;
+        } else if (hits === 11) {
+          award(st, "grandioso", 11, afterTax(GRANDIOSO_11), false);
+        }
+        // PODEROSO
+        hits = countHits(grid, setP);
+        if (hits === 12) {
+          award(st, "poderoso", 12, afterTax(st.poderosoJackpot), true);
+          st.poderosoJackpot = PODEROSO[12];
+        } else if (PODEROSO[hits]) {
+          if (hits === 0) st.zeroHits++;
+          award(st, "poderoso", hits, afterTax(PODEROSO[hits]), false);
+        }
+      }
+      for (var d = 0; d < GRIDS_15; d++) {
+        var grid15 = makeGrid(15);
+        var hits15 = countHits(grid15, setD);
+        if (hits15 === 15) {
+          award(st, "doble", 15, afterTax(st.doblePozo), true);
+          st.doblePozo = POZO_BASE;
+        } else if (DOBLE[hits15]) {
+          if (hits15 === 12) st.freeCartons++;
+          award(st, "doble", hits15, afterTax(DOBLE[hits15]), false);
+        }
+      }
+      // Jugada 4 — cartones al azar
+      if (Math.random() < AZAR_P) {
+        st.azarWins++;
+        award(st, "azar", 0, afterTax(AZAR_MENU[Math.floor(Math.random() * AZAR_MENU.length)]), false);
+      }
+    }
+
+    // Pozos grow when unwon this week
+    st.grandiosoPozo += POZO_GROWTH;
+    st.doblePozo += POZO_GROWTH;
+    st.poderosoJackpot += PODEROSO_STEP;
+
+    renderBalls(el.drawG, ballsG);
+    renderBalls(el.drawP, ballsP);
+    renderBalls(el.drawD, ballsD);
+  }
+
   function updateLive() {
-    el.liveSorteos.textContent = state.sorteos.toLocaleString("en-US");
-    el.liveHits.textContent = state.hits.toLocaleString("en-US");
+    el.liveWeeks.textContent = state.weeks.toLocaleString("en-US");
+    el.liveCartones.textContent = state.cartonesPlayed.toLocaleString("en-US");
     el.liveSpent.textContent = moneyCompact(state.totalSpent);
     el.liveWon.textContent = moneyCompact(state.earnings);
     var net = state.earnings - state.totalSpent;
     el.liveNet.textContent = moneyCompact(net);
     el.liveNet.classList.toggle("net-negative", net < 0);
     el.liveNet.classList.toggle("net-positive", net >= 0);
+    el.pozoG.textContent = moneyCompact(state.grandiosoPozo);
+    el.pozoD.textContent = moneyCompact(state.doblePozo);
+    el.pozoP.textContent = moneyCompact(state.poderosoJackpot);
   }
 
   function tick() {
-    for (var batch = 0; batch < SORTEOS_PER_TICK && !stopRequested; batch++) {
-      state.sorteos++;
-      state.totalSpent += state.bet;
-      state.sinceHit++;
-
-      var drawn = Math.floor(Math.random() * POOL_SIZE);
-      if (drawn === picked) {
-        state.hits++;
-        state.earnings += state.bet * PAYOUT_MULT;
-        state.longestDry = Math.max(state.longestDry, state.sinceHit - 1);
-        state.sinceHit = 0;
-        pushDraw(drawn);
-      } else if (state.sorteos % 8 === 0) {
-        // only repaint the strip every few sorteos so hits stay visible
-        pushDraw(drawn);
-      }
+    var batches = state.cartones > 200 ? 1 : 4;
+    for (var b = 0; b < batches && !stopRequested; b++) {
+      playWeek(state);
     }
-
     updateLive();
-
     if (stopRequested) finish();
   }
 
@@ -242,9 +322,6 @@
     el.start.disabled = false;
     el.stop.disabled = true;
     el.bet.disabled = false;
-    Array.prototype.forEach.call(el.grid.children, function (c) {
-      c.disabled = false;
-    });
     renderSummary();
   }
 
@@ -261,18 +338,12 @@
   function renderSummary() {
     var net = state.earnings - state.totalSpent;
     var roi = state.totalSpent > 0 ? net / state.totalSpent : 0;
-    var hitRate = state.sorteos > 0 ? state.hits / state.sorteos : 0;
-    var animal = ANIMALS[picked];
 
     var verdictClass = net >= 0 ? "verdict-win" : "verdict-loss";
     var html = "";
     html += '<div class="verdict ' + verdictClass + '">';
     html += '<span class="verdict-title">' + t("cashedOut") + "</span>";
-    html +=
-      '<span class="verdict-sub">' +
-      animal.emoji + " " + animal.name + " (" + String(animal.n).padStart(2, "0") + ") · " +
-      t("assumed") +
-      "</span>";
+    html += '<span class="verdict-sub">' + t("taxNote") + "</span>";
     html += "</div>";
 
     html +=
@@ -282,33 +353,44 @@
       "</div>";
 
     html += '<div class="summary-stats">';
-    html += statCard(t("sorteosPlayed"), state.sorteos.toLocaleString("en-US"));
+    html += statCard(t("weeks"), state.weeks.toLocaleString("en-US"));
+    html += statCard(t("cartonesPlayed"), state.cartonesPlayed.toLocaleString("en-US"));
     html += statCard(t("totalInvested"), money(state.totalSpent));
     html += statCard(t("totalEarnings"), money(state.earnings));
-    html += statCard(t("hits"), state.hits.toLocaleString("en-US"));
-    html += statCard(t("hitRate"), pct(hitRate) + " — " + t("expectedRate"));
     html += statCard(t("roi"), pct(roi), roi >= 0 ? "sstat-pos" : "sstat-neg");
-    if (state.hits > 0) {
-      html += statCard(t("bestStreak"), state.longestDry.toLocaleString("en-US") + " " + t("sorteosBetween"));
-    }
+    html += statCard(t("bestTier"), state.bestTier ? state.bestTier.label + " · " + moneyCompact(state.bestTier.amount) : t("none"));
+    if (state.zeroHits) html += statCard(t("zeroHits"), state.zeroHits.toLocaleString("en-US"));
+    if (state.freeCartons) html += statCard(t("freeCartons"), state.freeCartons.toLocaleString("en-US"));
+    if (state.azarWins) html += statCard(t("azarWins"), state.azarWins.toLocaleString("en-US"));
     html += "</div>";
 
-    if (state.hits === 0) {
-      html += '<p class="tier-empty">' + t("noHits") + "</p>";
+    // per-jugada tier breakdown
+    var keys = Object.keys(state.tiers).sort();
+    if (keys.length) {
+      html += '<div class="summary-stats">';
+      keys.forEach(function (k) {
+        var parts = k.split(":");
+        var jugada = parts[0], hits = parts[1];
+        var name = jugada === "grandioso" ? t("grandioso") : jugada === "poderoso" ? t("poderoso") : jugada === "doble" ? t("doble") : "Cartones al azar";
+        html += statCard(name, state.tiers[k].toLocaleString("en-US") + " × " + (hits === "0" && jugada === "azar" ? "" : hits + " " + t("hitsLabel")));
+      });
+      html += "</div>";
     }
+
+    html += '<p class="tier-empty">' + t("assumed") + "</p>";
 
     el.output.innerHTML = html;
     el.output.hidden = false;
   }
 
   function readInputs() {
-    var bet = parseInt(el.bet.value, 10);
-    if (picked === null || !(bet >= 100)) {
+    var cartones = parseInt(el.bet.value, 10);
+    if (!(cartones >= 1)) {
       el.output.innerHTML = '<div class="verdict verdict-warn">⚠️ ' + t("invalidInput") + "</div>";
       el.output.hidden = false;
       return null;
     }
-    return { bet: bet };
+    return { cartones: Math.min(cartones, 500) };
   }
 
   el.start.addEventListener("click", function () {
@@ -316,21 +398,19 @@
     var inputs = readInputs();
     if (!inputs) return;
 
-    state = resetState(inputs.bet);
+    state = resetState(inputs.cartones);
     stopRequested = false;
     running = true;
 
     el.start.disabled = true;
     el.stop.disabled = false;
     el.bet.disabled = true;
-    Array.prototype.forEach.call(el.grid.children, function (c) {
-      c.disabled = true;
-    });
 
     el.output.hidden = true;
     el.output.innerHTML = "";
     el.live.hidden = false;
-    el.drawWrap.hidden = false;
+    el.draws.hidden = false;
+    el.pozos.hidden = false;
     updateLive();
 
     timer = setInterval(tick, 16);
