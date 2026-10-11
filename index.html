@@ -47,7 +47,8 @@
           <article class="card">
             <span class="card-icon">📺</span>
             <h3>telebingo.py</h3>
-            <p data-i18n="telebingoDesc">Telebingo de Canal 9 TV Cerro Corá (GAMBLING S.A. / Conajzar): cartones with 01–25 numbers. GRANDIOSO, PODEROSO and DOBLE CHANCE draws — 12, 12 and 15 balls respectively, with per-tier wins and only the highest tier paying per drawing.</p>
+            <p data-i18n="telebingoDesc">Telebingo de Canal 9 TV Cerro Corá (GAMBLING S.A. / Conajzar): cartones with 01–25 numbers. GRANDIOSO, PODEROSO and DOBLE CHANCE draws — 12, 12 and 15 balls respectively,             with per-tier wins and only the highest tier paying per drawing.</p>
+            <a class="card-link" href="#telebingo-sim" data-i18n="tryInBrowser">Try it in the browser ↓</a>
             <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/telebingo.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
           </article>
 
@@ -157,6 +158,70 @@
       <div id="sim-output" class="sim-summary" hidden></div>
     </section>
 
+    <section id="telebingo-sim" class="sim" aria-labelledby="tb-heading">
+      <h2 id="tb-heading" data-i18n="tbHeading">🎮 Try telebingo.py in your browser</h2>
+      <p class="sim-intro" data-i18n="tbIntro">The same simulation as telebingo.py, running right here: pick your settings, press Start, and the sorteos roll week by week until a POZO lands. Press Cash out any time to stop and see your results.</p>
+
+      <div class="sim-facts" role="list" aria-label="Telebingo facts">
+        <div class="fact" role="listitem">
+          <span class="fact-value">01–25</span>
+          <span class="fact-label" data-i18n="tbFactPool">bolilla pool per cartón series</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">12 · 12 · 15</span>
+          <span class="fact-label" data-i18n="tbFactBalls">balls drawn — GRANDIOSO · PODEROSO · DOBLE CHANCE</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">1 <span class="fact-per">in</span> 3.27M</span>
+          <span class="fact-label" data-i18n="tbFactOddsPozo">odds of a 15-hit DOBLE CHANCE column</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">3</span>
+          <span class="fact-label" data-i18n="tbFactSeries">independent series per cartón</span>
+        </div>
+      </div>
+
+      <div class="sim-config">
+        <label>
+          <span data-i18n="tbCartones">Cartones per sorteo</span>
+          <input type="number" id="tb-cartones" min="1" step="1" value="10" />
+        </label>
+        <label>
+          <span data-i18n="tbCost">Cost per cartón (₲)</span>
+          <input type="number" id="tb-cost" min="1" step="500" value="5000" />
+        </label>
+        <div class="sim-buttons">
+          <button id="tb-start" type="button" class="sim-btn sim-btn-start" data-i18n="simStart">▶ Start</button>
+          <button id="tb-stop" type="button" class="sim-btn sim-btn-stop" data-i18n="simStop" disabled>🛑 Cash out</button>
+        </div>
+      </div>
+
+      <div class="sim-live" id="tb-live" hidden>
+        <div class="stat">
+          <span class="stat-value" id="tb-live-years">0.0</span>
+          <span class="stat-label" data-i18n="statYears">years</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="tb-live-drawings">0</span>
+          <span class="stat-label" data-i18n="statDrawings">drawings</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="tb-live-spent">₲0</span>
+          <span class="stat-label" data-i18n="statSpent">spent</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="tb-live-won">₲0</span>
+          <span class="stat-label" data-i18n="statWon">won</span>
+        </div>
+        <div class="stat stat-net">
+          <span class="stat-value" id="tb-live-net">₲0</span>
+          <span class="stat-label" data-i18n="statNet">net</span>
+        </div>
+      </div>
+
+      <div id="tb-output" class="sim-summary" hidden></div>
+    </section>
+
     <section class="run">
       <h2 data-i18n="runItYourself">Run it yourself</h2>
       <pre><code>git clone https://github.com/ch1llc0d3/dinero.git
@@ -173,5 +238,6 @@ python3 powerball.py</code></pre>
   <script src="js/main.js"></script>
   <script src="js/money-rain.js"></script>
   <script src="js/powerball-sim.js"></script>
+  <script src="js/telebingo-sim.js"></script>
 </body>
 </html>
