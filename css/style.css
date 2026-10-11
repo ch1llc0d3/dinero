@@ -635,3 +635,98 @@ footer {
   .controls { top: 0.5rem; right: 0.5rem; }
   .switch-btn { padding: 0.3rem 0.55rem; }
 }
+
+/* ---------- Seneté animal grid + draw strip ---------- */
+.sn-pick {
+  margin-bottom: 1.25rem;
+}
+
+.sn-pick-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.sn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(3.4rem, 1fr));
+  gap: 0.4rem;
+}
+
+.sn-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.45rem 0.2rem 0.35rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+.sn-cell:hover:not(:disabled) {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.sn-cell.picked {
+  border-color: var(--accent);
+  background: rgba(240, 180, 41, 0.12);
+  box-shadow: 0 0 10px rgba(240, 180, 41, 0.25);
+}
+.sn-cell:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.sn-cell-emoji {
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.sn-cell-num {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.sn-draw-wrap {
+  margin-bottom: 1rem;
+}
+
+.sn-draw-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+.sn-draw-strip {
+  display: flex;
+  gap: 0.35rem;
+  overflow: hidden;
+}
+
+.sn-draw-slot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 1.2rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.sn-draw-hit {
+  border-color: var(--accent-2);
+  background: rgba(63, 185, 80, 0.15);
+  box-shadow: 0 0 8px rgba(63, 185, 80, 0.35);
+}

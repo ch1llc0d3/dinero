@@ -56,6 +56,7 @@
             <span class="card-icon">🐴</span>
             <h3>senete.py</h3>
             <p data-i18n="seneteDesc">Seneté (Paraguay) — the animal-lottery game. Scaffold pending the actual rules: animal pool size, balls drawn per sorteo, ticket cost in Guaraníes, prize table and drawing frequency.</p>
+            <a class="card-link" href="#senete-sim" data-i18n="tryDemo">Try a demo in the browser ↓</a>
             <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/senete.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
           </article>
 
@@ -222,6 +223,76 @@
       <div id="tb-output" class="sim-summary" hidden></div>
     </section>
 
+    <section id="senete-sim" class="sim" aria-labelledby="sn-heading">
+      <h2 id="sn-heading" data-i18n="snHeading">🎮 Seneté — animal-lottery demo</h2>
+      <p class="sim-intro" data-i18n="snIntro">senete.py is still a scaffold — the real rules are pending. So this is a demo of the classic animal-lottery mechanic with assumed rules: 25 animals, one drawn per sorteo, pick yours and a hit pays 20× your bet. Press Start and watch the sorteos roll — press Cash out any time to see how you're doing.</p>
+
+      <div class="sim-facts" role="list" aria-label="Seneté demo facts (assumed rules)">
+        <div class="fact" role="listitem">
+          <span class="fact-value">25</span>
+          <span class="fact-label" data-i18n="snFactPool">animals in the pool (assumed)</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">1</span>
+          <span class="fact-label" data-i18n="snFactDrawn">animal drawn per sorteo (assumed)</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">20×</span>
+          <span class="fact-label" data-i18n="snFactPayout">payout on a hit (assumed)</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">1 <span class="fact-per">in</span> 25</span>
+          <span class="fact-label" data-i18n="snFactOdds">odds of a hit — house edge 20%</span>
+        </div>
+      </div>
+
+      <div class="sn-pick">
+        <span class="sn-pick-label" data-i18n="snPick">Pick your animal</span>
+        <div class="sn-grid" id="sn-grid" role="listbox" aria-label="Animals"></div>
+      </div>
+
+      <div class="sim-config">
+        <label>
+          <span data-i18n="snBet">Bet per sorteo (₲)</span>
+          <input type="number" id="sn-bet" min="100" step="100" value="1000" />
+        </label>
+        <div class="sim-buttons">
+          <button id="sn-start" type="button" class="sim-btn sim-btn-start" data-i18n="simStart">▶ Start</button>
+          <button id="sn-stop" type="button" class="sim-btn sim-btn-stop" data-i18n="simStop" disabled>🛑 Cash out</button>
+        </div>
+      </div>
+
+      <div class="sn-draw-wrap" id="sn-draw-wrap" hidden>
+        <span class="sn-draw-label" data-i18n="snLastDrawn">Last drawn</span>
+        <div class="sn-draw-strip" id="sn-draw-strip" aria-hidden="true"></div>
+      </div>
+
+      <div class="sim-live" id="sn-live" hidden>
+        <div class="stat">
+          <span class="stat-value" id="sn-live-sorteos">0</span>
+          <span class="stat-label" data-i18n="statDrawings">drawings</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="sn-live-hits">0</span>
+          <span class="stat-label" data-i18n="snHits">hits</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="sn-live-spent">₲0</span>
+          <span class="stat-label" data-i18n="statSpent">spent</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="sn-live-won">₲0</span>
+          <span class="stat-label" data-i18n="statWon">won</span>
+        </div>
+        <div class="stat stat-net">
+          <span class="stat-value" id="sn-live-net">₲0</span>
+          <span class="stat-label" data-i18n="statNet">net</span>
+        </div>
+      </div>
+
+      <div id="sn-output" class="sim-summary" hidden></div>
+    </section>
+
     <section class="run">
       <h2 data-i18n="runItYourself">Run it yourself</h2>
       <pre><code>git clone https://github.com/ch1llc0d3/dinero.git
@@ -239,5 +310,6 @@ python3 powerball.py</code></pre>
   <script src="js/money-rain.js"></script>
   <script src="js/powerball-sim.js"></script>
   <script src="js/telebingo-sim.js"></script>
+  <script src="js/senete-sim.js"></script>
 </body>
 </html>
