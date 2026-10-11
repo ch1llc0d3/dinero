@@ -540,7 +540,8 @@ h2 { margin-bottom: 1.5rem; }
   50% { color: inherit; text-shadow: none; }
   75% { color: var(--accent); text-shadow: 0 0 18px rgba(240, 180, 41, 0.7); }
 }
-.sim.jackpot #sim-heading {
+.sim.jackpot #sim-heading,
+.sim.jackpot #tb-heading {
   animation: jackpotFlash 1.6s ease-in-out 2;
 }
 
@@ -548,7 +549,8 @@ h2 { margin-bottom: 1.5rem; }
   .sim-running .sim-live,
   .sim-running .sim-btn-stop:not(:disabled),
   .sim-summary,
-  .sim.jackpot #sim-heading {
+  .sim.jackpot #sim-heading,
+  .sim.jackpot #tb-heading {
     animation: none;
   }
 }
