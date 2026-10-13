@@ -60,10 +60,11 @@
             <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/senete.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
           </article>
 
-          <article class="card card-scaffold">
+          <article class="card">
             <span class="card-icon">🎲</span>
             <h3>binguito.py</h3>
-            <p data-i18n="binguitoDesc">Deprecated — the Telebingo reglamento arrived and the game was split into telebingo.py (implemented) and senete.py (scaffold). Kept for history.</p>
+            <p data-i18n="binguitoDesc">Telebingo Triple (Talismán S.A.) — the game fronted by "el popular Binguito". Real 2026 reglamento: cartones (₲10.000) with 1–25 grids; four cantadas per Sunday sorteo — 12, 13, 15 and 15 balls; pozos up to ₲900M plus a vehicle, the REVENTÓN sale-o-sale ₲250M and El Dúo.</p>
+            <a class="card-link" href="#binguito-sim" data-i18n="tryInBrowser">Try it in the browser ↓</a>
             <a class="card-link" href="https://github.com/ch1llc0d3/dinero/blob/main/binguito.py" target="_blank" rel="noopener" data-i18n="viewSource">View source →</a>
           </article>
         </div>
@@ -307,6 +308,96 @@
       <div id="sn-output" class="sim-summary" hidden></div>
     </section>
 
+    <section id="binguito-sim" class="sim" aria-labelledby="bg-heading">
+      <h2 id="bg-heading" data-i18n="bgHeading">🎮 Binguito — Telebingo Triple, real 2026 rules</h2>
+      <p class="sim-intro" data-i18n="bgIntro">The real game fronted by "el popular Binguito": each cartón (₲10.000) has four scoring grids — 12, 13, 15 and 15 numbers from 1–25. Every Sunday sorteo has four cantadas — 1RA (12 balls, pozo ₲900M), 2DA (13 balls, ₲650M), 3RA (15 balls, ₲500M + a vehicle) and the REVENTÓN sale-o-sale (15 balls, ₲250M to the best scorers) — plus El Dúo. Pick how many cartones you buy per week and watch the sorteos roll.</p>
+
+      <div class="sim-facts" role="list" aria-label="Telebingo Triple facts (2026 rules)">
+        <div class="fact" role="listitem">
+          <span class="fact-value">1–25</span>
+          <span class="fact-label" data-i18n="bgFactPool">number pool</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">12 · 13 · 15 · 15</span>
+          <span class="fact-label" data-i18n="bgFactBalls">balls drawn — 1RA · 2DA · 3RA · REVENTÓN</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">₲10.000</span>
+          <span class="fact-label" data-i18n="bgFactPrice">per cartón, sorteo every Sunday</span>
+        </div>
+        <div class="fact" role="listitem">
+          <span class="fact-value">1 <span class="fact-per">in</span> 1.0M</span>
+          <span class="fact-label" data-i18n="bgFactOdds">odds of a POZO per cartón</span>
+        </div>
+      </div>
+
+      <div class="sim-config">
+        <label>
+          <span data-i18n="bgCartones">Cartones per sorteo (₲10.000 each)</span>
+          <input type="number" id="bg-cartones" min="1" max="500" step="1" value="10" />
+        </label>
+        <div class="sim-buttons">
+          <button id="bg-start" type="button" class="sim-btn sim-btn-start" data-i18n="simStart">▶ Start</button>
+          <button id="bg-stop" type="button" class="sim-btn sim-btn-stop" data-i18n="simStop" disabled>🛑 Cash out</button>
+        </div>
+      </div>
+
+      <div class="sn-draw-wrap" id="bg-draws" hidden>
+        <span class="sn-draw-label" data-i18n="bgCantada1">1RA. CANTADA — 12 of 25</span>
+        <div class="sn-ball-row" id="bg-balls-1"></div>
+        <span class="sn-draw-label" data-i18n="bgCantada2">2DA. CANTADA — 13 of 25</span>
+        <div class="sn-ball-row" id="bg-balls-2"></div>
+        <span class="sn-draw-label" data-i18n="bgCantada3">3RA. CANTADA — 15 of 25</span>
+        <div class="sn-ball-row" id="bg-balls-3"></div>
+        <span class="sn-draw-label" data-i18n="bgReventon">REVENTÓN — 15 of 25</span>
+        <div class="sn-ball-row" id="bg-balls-r"></div>
+      </div>
+
+      <div class="sn-pozos" id="bg-pozos" hidden>
+        <div class="fact">
+          <span class="fact-value">₲900M</span>
+          <span class="fact-label" data-i18n="bgPozo1">1RA POZO</span>
+        </div>
+        <div class="fact">
+          <span class="fact-value">₲650M</span>
+          <span class="fact-label" data-i18n="bgPozo2">2DA POZO</span>
+        </div>
+        <div class="fact">
+          <span class="fact-value">₲500M 🚗</span>
+          <span class="fact-label" data-i18n="bgPozo3">3RA POZO + vehicle</span>
+        </div>
+        <div class="fact">
+          <span class="fact-value">₲250M</span>
+          <span class="fact-label" data-i18n="bgPozoR">REVENTÓN (sale o sale)</span>
+        </div>
+      </div>
+
+      <div class="sim-live" id="bg-live" hidden>
+        <div class="stat">
+          <span class="stat-value" id="bg-live-sorteos">0</span>
+          <span class="stat-label" data-i18n="bgSorteos">sorteos (weeks)</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="bg-live-cartones">0</span>
+          <span class="stat-label" data-i18n="bgCartonesPlayed">cartones played</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="bg-live-spent">₲0</span>
+          <span class="stat-label" data-i18n="statSpent">spent</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="bg-live-won">₲0</span>
+          <span class="stat-label" data-i18n="statWon">won</span>
+        </div>
+        <div class="stat stat-net">
+          <span class="stat-value" id="bg-live-net">₲0</span>
+          <span class="stat-label" data-i18n="statNet">net</span>
+        </div>
+      </div>
+
+      <div id="bg-output" class="sim-summary" hidden></div>
+    </section>
+
     <section class="run">
       <h2 data-i18n="runItYourself">Run it yourself</h2>
       <pre><code>git clone https://github.com/ch1llc0d3/dinero.git
@@ -325,5 +416,6 @@ python3 powerball.py</code></pre>
   <script src="js/powerball-sim.js"></script>
   <script src="js/telebingo-sim.js"></script>
   <script src="js/senete-sim.js"></script>
+  <script src="js/binguito-sim.js"></script>
 </body>
 </html>

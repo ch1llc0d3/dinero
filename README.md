@@ -11,8 +11,8 @@ Lottery probability simulations — how much money do you actually make (or lose
 | `index.html` + `css/` + `js/` | Interactive landing page (EN/ES, dark/light theme) describing the project and linking each simulation's source |
 | `powerball.py` | US Powerball simulation (implemented) |
 | `telebingo.py` | Telebingo de Canal 9 (Paraguay) simulation (implemented) |
-| `senete.py` | Seneté (Paraguay) simulation — scaffold, rules pending |
-| `binguito.py` | Deprecated — superseded by `telebingo.py` and `senete.py` |
+| `senete.py` | Seneté (Paraguay) simulation — real 2026 rules |
+| `binguito.py` | Telebingo Triple (Talismán S.A.) simulation — real 2026 rules |
 
 ## Simulations
 
@@ -42,13 +42,34 @@ Run:
 python3 telebingo.py
 ```
 
-### `senete.py` — Seneté (Paraguay) 🇵🇾 — scaffold
+### `senete.py` — Seneté (Paraguay) 🇵🇾 — real 2026 rules
 
-Seneté is a separate game (the animal lottery) with its own rules, which aren't in the Telebingo reglamento. This file is a placeholder that will mirror `telebingo.py` once the real rules arrive.
+Implemented from the official reglamento and published 2026 results (see `docs/senete-rules-2026.md`):
 
-### `binguito.py` — deprecated
+- Numbers 1–25 (no animals); cartones with two 12-number and two 15-number grids
+- Four jugadas per Sunday sorteo: GRANDIOSO, PODEROSO, DOBLE CHANCE and cartones al azar
+- Progressive pozos and a ₲2M zero-hits consolation; 8% IRP on prizes ≥ ₲500.000
 
-The original scaffold. When the rules arrived, they turned out to be Telebingo's — the work was split into `telebingo.py` and `senete.py`. Kept only for history.
+Run:
+
+```bash
+python3 senete.py
+```
+
+### `binguito.py` — Telebingo Triple (Paraguay) 🇵🇾 — real 2026 rules
+
+"Binguito" is the nickname of Armando Acosta, the popular presenter of **Telebingo Triple** (Talismán S.A., Decreto 934/2023) — a different game from the GAMBLING S.A. Telebingo above. Implemented from the official reglamento del sorteo del 18-10-2026 (see `docs/telebingo-triple-rules-2026.md`):
+
+- Numbers 1–25; cartones (₲10.000) with four scoring grids — 12, 13, 15 and 15 numbers
+- Four cantadas per Sunday sorteo: 1RA (12 balls, pozo ₲900M), 2DA (13 balls, ₲650M), 3RA (15 balls, ₲500M + vehicle) and the REVENTÓN "sale o sale" (15 balls, ₲250M to the best scorers)
+- El Dúo: one cartón number wins ₲10M; its last two digits pay ₲50K to every matching cartón
+- 8% IRP withholding on cash prizes ≥ ₲500.000
+
+Run:
+
+```bash
+python3 binguito.py
+```
 
 ## License
 
