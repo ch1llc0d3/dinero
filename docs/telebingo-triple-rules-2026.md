@@ -90,3 +90,33 @@ Sources:
 - Weekly variation extras seen in results (extra vehicle winners,
   PACKPLAY, 50 × ₲500K efectivo) are not defined in this reglamento and
   are not simulated.
+
+## Verification log
+
+### 2026-10-13 — full re-verification against the live site
+
+- Re-scraped <https://www.talisman.com.py/como-jugar> (reglamento del
+  sorteo del 18-10-2026) and <https://www.talisman.com.py/> (TB 11 OCT
+  2026 results). Every prize table, ball count and pozo in this doc and
+  in `binguito.py` / `js/binguito-sim.js` still matches the published
+  reglamento — no drift found.
+- `python3 binguito.py` runs clean (520 sorteos × 10 cartones).
+- Browser E2E of the `#binguito-sim` section (local server + Playwright):
+  Start runs live sorteos, all four cantada ball trays render, Cash out
+  renders the full summary (net, ROI, best tier, per-cantada breakdown,
+  El Dúo counts, tax note). Only console message was a favicon 404.
+- Statistical sanity check over 21.120 scored grids per cantada —
+  observed vs expected (exact combinatorial odds), all within Poisson
+  noise (σ ≈ 16–19):
+
+  | tier | expected | observed |
+  |---|---|---|
+  | 1RA 9 hits | 255 | 229 |
+  | 2DA 10 hits | 255 | 267 |
+  | 3RA 12 hits | 353 | 349 |
+  | REVENTÓN 12 hits | 353 | 362 |
+  | El Dúo endings | 211 | 200 |
+
+- Withholding verified in-run: best tier displayed "11 hits · ₲2M"
+  (₲2.200.000 × 0.92 = ₲2.024.000). Pozo odds recomputed: 1 in
+  1.003.567 per cartón — matches the "1 in 1.004.000" figure above.
