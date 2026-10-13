@@ -253,6 +253,13 @@
     el.liveNet.textContent = moneyCompact(net);
     el.liveNet.classList.toggle("net-negative", net < 0);
     el.liveNet.classList.toggle("net-positive", net >= 0);
+
+    // Money rain intensity follows how fast we're burning cash
+    if (window.MoneyRain) {
+      var burn = state.cartones * state.cost * SORTEOS_PER_YEAR; // ₲ per sim-year
+      var rate = Math.min(1, Math.log10(Math.max(burn, 1)) / 9); // ₲1 .. ₲1B+/yr
+      window.MoneyRain.setIntensity(rate);
+    }
   }
 
   // One simulated sorteo per tick batch. With the placeholder prize
@@ -324,6 +331,13 @@
 
     if (state.hitPozo) {
       el.section.classList.add("jackpot");
+      if (window.MoneyRain) window.MoneyRain.celebrate();
+      // Let the gold rain fall for a moment, then stop it
+      setTimeout(function () {
+        if (window.MoneyRain) window.MoneyRain.stop();
+      }, 5000);
+    } else {
+      if (window.MoneyRain) window.MoneyRain.stop();
     }
     renderSummary();
   }
@@ -436,6 +450,7 @@
     el.live.hidden = false;
     el.section.classList.remove("jackpot");
     el.section.classList.add("sim-running");
+    if (window.MoneyRain) window.MoneyRain.start();
     updateLive();
 
     timer = setInterval(tick, 16);
