@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- Full-page money-rain overlay (Three.js), shared by every simulator -->
+  <canvas id="sim-rain" aria-hidden="true"></canvas>
   <div class="controls">
     <div class="switch-group" role="group" aria-label="Language">
       <button class="switch-btn" id="lang-en" type="button" aria-pressed="true">EN</button>
@@ -84,7 +86,6 @@
     </section>
 
     <section id="powerball-sim" class="sim" aria-labelledby="sim-heading">
-      <canvas id="sim-rain" aria-hidden="true"></canvas>
       <h2 id="sim-heading" data-i18n="simHeading">🎮 Try powerball.py in your browser</h2>
       <p class="sim-intro" data-i18n="simIntro">The same simulation as powerball.py, running right here: pick your settings, press Start, and watch the years roll by. Press Cash out any time to stop and see your results.</p>
 

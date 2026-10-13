@@ -310,6 +310,13 @@
     el.liveNet.textContent = moneyCompact(net);
     el.liveNet.classList.toggle("net-negative", net < 0);
     el.liveNet.classList.toggle("net-positive", net >= 0);
+
+    // Money rain intensity follows how fast we're burning cash
+    if (window.MoneyRain) {
+      var burn = state.cartones * 10000 * 52; // ₲ per sim-year (weekly sorteo)
+      var rate = Math.min(1, Math.log10(Math.max(burn, 1)) / 9); // ₲1 .. ₲1B+/yr
+      window.MoneyRain.setIntensity(rate);
+    }
   }
 
   function tick() {
@@ -328,6 +335,7 @@
     el.start.disabled = false;
     el.stop.disabled = true;
     el.bet.disabled = false;
+    if (window.MoneyRain) window.MoneyRain.stop();
     renderSummary();
   }
 
@@ -416,6 +424,7 @@
     el.live.hidden = false;
     el.draws.hidden = false;
     el.pozos.hidden = false;
+    if (window.MoneyRain) window.MoneyRain.start();
     updateLive();
 
     timer = setInterval(tick, 16);
