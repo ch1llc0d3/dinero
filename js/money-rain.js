@@ -21,7 +21,7 @@
     return;
   }
 
-  var MAX_BILLS = 160;
+  var MAX_BILLS = 70;
   var VIEW_HEIGHT = 10; // world units visible vertically
 
   var canvas = document.getElementById("sim-rain");
@@ -92,7 +92,7 @@
   }
 
   function spawnBill() {
-    var geo = new THREE.PlaneGeometry(1.1, 0.55);
+    var geo = new THREE.PlaneGeometry(0.95, 0.475);
     var mat = new THREE.MeshBasicMaterial({
       map: gold ? goldTexture : greenTexture,
       side: THREE.DoubleSide,
@@ -167,11 +167,11 @@
     },
     // rate: 0..1 normalized burn intensity
     setIntensity: function (rate) {
-      spawnRate = 6 + rate * 54; // 6..60 bills/s
+      spawnRate = 3 + rate * 18; // 3..21 bills/s
     },
     celebrate: function () {
       gold = true;
-      spawnRate = 90;
+      spawnRate = 40;
       // Re-tint existing bills to gold
       bills.forEach(function (b) {
         b.material.map = goldTexture;
