@@ -1,49 +1,72 @@
-# System Design Dinero
+# Design system — Macumba
 
-The web UI uses a **glassmorphism** style — translucent frosted-glass cards,
-soft background blurs and glowing borders — over an esoteric, data-driven
-backdrop (crimson + gold glows, faint "zodiac wheel" rings and a data-grid
-dot pattern). All styling lives in [`css/style.css`](../css/style.css).
+How the [Macumba brand](brand/README.md) becomes code. Frosted-glass
+surfaces sit over a cobalt/charcoal backdrop, the hero is a flat cobalt
+"slide", and everything is set in Inter.
 
-## Palette
+```
+css/tokens.css   ← brand palette + semantic tokens (source of truth)
+css/style.css    ← components; consumes semantic tokens only
+```
 
-| Role | Name | Hex | Used for |
-|---|---|---|---|
-| Primary | Mystic Crimson | `#8B0000` | Branding, backdrop, primary buttons (▶ Start) |
-| Secondary | Lucky Gold | `#FFD700` | Wins, badges, highlights, CTA pill, Cash out, glowing borders |
-| Accent / Action | Algorithmic Blue | `#1E3A8A` | Links, focus rings, active states |
-| Background (Light) | Parchment Cream | `#FDFBF7` | Light-theme base |
-| Background (Dark) | Terminal Dark | `#0F172A` | Dark-theme base |
-| Success / Win | Vibrant Emerald | `#10B981` | Positive net, wins, money-rain bills |
+`index.html` loads Inter (Google Fonts), then `tokens.css`, then
+`style.css`.
 
 ## Token layers
 
-1. **Brand tokens** (`--mystic-crimson`, `--lucky-gold`, …) — the six hex
-   codes above, identical in both themes.
-2. **Semantic tokens** (`--text`, `--accent`, `--link`, `--success`,
-   `--danger`, `--glass*`, `--backdrop-*`) — redefined per
-   `[data-theme]`. Components only use these.
+1. **Brand** (`--macumba-*`, `--signal-*`, `--font-*`, `--radius-*`). Fixed
+   hexes, identical in both themes. Documented in
+   [brand/color-palette.md](brand/color-palette.md).
+2. **Semantic** (`--bg`, `--text`, `--muted`, `--primary`, `--on-primary`,
+   `--accent`, `--on-accent`, `--link`, `--focus`, `--focus-ring`,
+   `--success`, `--danger`, `--glass*`, `--hero-*`, `--backdrop-*`).
+   Redefined per `[data-theme]`. **Components use only these.**
 
-Where a raw brand colour fails WCAG AA as *text* on a theme's background,
-the semantic token uses a tint of it instead:
+`style.css` contains no raw colour values except white highlight
+`rgba(255,255,255,…)` sheens. To add a colour, add a brand token, map it to a
+semantic token in both themes, then use the semantic one.
 
-| Token | Dark theme | Light theme |
+### Theme mapping
+
+| Semantic | Dark (default) | Light |
 |---|---|---|
-| `--accent` (gold text) | `#FFD700` | `#8A6A00` (darkened gold) |
-| `--link` | `#8FA8F0` (lightened blue) | `#1E3A8A` |
-| `--success` | `#10B981` | `#047857` (darkened emerald) |
-| `--danger` | `#FF6B6B` (lightened crimson) | `#8B0000` |
+| `--bg` | Charcoal | Bone |
+| `--text` | Bone | Charcoal |
+| `--muted` | Bone @ 68% | Ash `#5E605D` |
+| `--primary` / hover | Cobalt / Cobalt-bright | Cobalt / Cobalt-deep |
+| `--accent` | Periwinkle | Cobalt (periwinkle fails on bone) |
+| `--on-accent` | Charcoal | White |
+| `--link` | Periwinkle | Cobalt |
+| `--success` | `#10B981` | `#047857` |
+| `--danger` | `#FF6B6B` | `#B42318` |
+| `--hero-bg` | Cobalt | Cobalt |
 
-The raw brand colours are still used for fills, borders and glows.
+The theme lives on `<html data-theme>`, toggled and persisted by `js/main.js`.
 
-## Glass surfaces
+## Components
 
-- **Top-level panels** (`.card`, `.sim`, `.run`, controls): `--glass`
-  background + `backdrop-filter: blur(18px) saturate(140%)`, a translucent
-  border, an inset top highlight and a soft drop shadow. Cards gain a gold
-  glow on hover.
-- **Nested panels** (facts, stats, verdicts, inputs, chips, balls): a tinted
-  `--glass-inset` fill *without* their own blur — the parent already frosts
-  the backdrop, and nested `backdrop-filter`s are expensive.
-- Browsers without `backdrop-filter` fall back to a more opaque surface via
-  `@supports not (...)`.
+| Component | Treatment |
+|---|---|
+| **Hero** | Full-bleed flat `--hero-bg` (cobalt) in both themes, white ExtraBold title, Light tagline |
+| **CTA** | Charcoal "handle pill" (white text); inverts to white/cobalt on hover |
+| **Cards / sim panels** | `--glass` + `backdrop-filter: blur(18px)`; accent border and glow on hover |
+| **Nested panels** (stats, inputs, chips, balls) | `--glass-inset`, no own blur; the parent already frosts |
+| **Primary button** (▶ Start) | Flat `--primary`, `--on-primary` text |
+| **Secondary button** (Cash out) | `--accent` outline; fills `--accent` with `--on-accent` text on hover |
+| **Active switch / chip** | `--accent` fill, `--on-accent` text |
+| **Focus** | `--focus` border + 3px `--focus-ring` |
+| **Jackpot** | Heading flashes `--accent` with an `--accent-glow` shadow; money-rain bills turn cobalt and periwinkle |
+
+## Glass rules
+
+- Only top-level panels (`.card`, `.sim`, `.run`, controls) get
+  `backdrop-filter`. Nested `backdrop-filter`s are expensive and add nothing.
+- Browsers without `backdrop-filter` fall back to `--glass-strong`
+  (light) or `--glass-fallback` (dark) via `@supports not (...)`.
+- The fixed `body::before` backdrop gives the glass something to blur:
+  cobalt glows, periwinkle "zodiac" rings, and a dot grid.
+
+## Motion
+
+The jackpot flash, sim-running glow and money rain respect
+`prefers-reduced-motion` (money rain becomes a no-op).

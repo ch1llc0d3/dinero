@@ -1,0 +1,139 @@
+/* =====================================================================
+   Macumba design tokens — the single source of truth for colour, type
+   and shape. Loaded before css/style.css; components only consume the
+   SEMANTIC layer. Rationale, contrast ratios and usage rules live in
+   docs/brand/color-palette.md and docs/design-system.md.
+
+   Palette sampled from the "Macumba — Ciencia de datos" decks
+   (AI Tinkerers + WTM editions).
+   ===================================================================== */
+
+/* ---------- layer 1: brand palette (fixed, theme-independent) ---------- */
+:root {
+  /* Core — the three slide surfaces + the accent */
+  --macumba-cobalt: #1A36B4;      /* Primary — hero band, primary buttons, brand blocks */
+  --macumba-periwinkle: #A4C2F4;  /* Accent — highlights, bullets, values on dark */
+  --macumba-bone: #F5F4EB;        /* Light surface — data slides, light theme base */
+  --macumba-charcoal: #1D1D1D;    /* Dark surface — reflective slides, dark theme base */
+  --macumba-white: #FFFFFF;       /* Type on cobalt */
+
+  /* Derived — tonal steps of the core, never new hues */
+  --macumba-cobalt-deep: #12257D;   /* pressed / hover on light */
+  --macumba-cobalt-bright: #2E4FD6; /* hover on dark */
+  --macumba-cobalt-night: #14204F;  /* cobalt sunk into charcoal (backdrop) */
+  --macumba-ash: #5E605D;           /* secondary text on bone */
+
+  /* Functional — status only, never decoration */
+  --signal-green: #10B981;
+  --signal-green-deep: #047857;
+  --signal-red: #FF6B6B;
+  --signal-red-deep: #B42318;
+
+  /* Type — the decks are set in Inter, Light → ExtraBold */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* Shape */
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+  --blur: 18px;
+}
+
+/* ---------- layer 2: semantic tokens — dark (default, charcoal slide) ---------- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--macumba-charcoal);
+  --text: var(--macumba-bone);
+  --muted: rgba(245, 244, 235, 0.68);
+
+  /* frosted glass */
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-strong: rgba(255, 255, 255, 0.09);
+  --glass-inset: rgba(29, 29, 29, 0.50);
+  --glass-border: rgba(164, 194, 244, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.14);
+  --glass-fallback: rgba(29, 29, 29, 0.92);  /* no backdrop-filter support */
+  --shadow: rgba(0, 0, 0, 0.50);
+  --border: rgba(255, 255, 255, 0.12);
+
+  /* roles */
+  --primary: var(--macumba-cobalt);
+  --primary-hover: var(--macumba-cobalt-bright);
+  --on-primary: var(--macumba-white);
+  --accent: var(--macumba-periwinkle);        /* 9.3:1 on charcoal */
+  --accent-soft: rgba(164, 194, 244, 0.12);
+  --accent-glow: rgba(164, 194, 244, 0.35);
+  --on-accent: var(--macumba-charcoal);
+  --link: var(--macumba-periwinkle);
+  --focus: #7B99E1;
+  --focus-ring: rgba(164, 194, 244, 0.40);
+  --success: var(--signal-green);
+  --success-soft: rgba(16, 185, 129, 0.45);
+  --danger: var(--signal-red);
+  --danger-soft: rgba(255, 107, 107, 0.45);
+
+  /* hero = a cobalt slide in both themes */
+  --hero-bg: var(--macumba-cobalt);
+  --hero-text: var(--macumba-white);
+  --hero-muted: rgba(255, 255, 255, 0.82);
+  --hero-pill-bg: var(--macumba-charcoal);
+  --hero-pill-text: var(--macumba-white);
+
+  /* backdrop */
+  --backdrop-base-1: var(--macumba-cobalt-night);
+  --backdrop-glow-1: rgba(26, 54, 180, 0.70);
+  --backdrop-glow-2: rgba(26, 54, 180, 0.40);
+  --backdrop-glow-3: rgba(164, 194, 244, 0.10);
+  --backdrop-blue: rgba(164, 194, 244, 0.08);
+  --backdrop-line: rgba(164, 194, 244, 0.07);
+  --backdrop-dot: rgba(245, 244, 235, 0.06);
+}
+
+/* ---------- layer 2: semantic tokens — light (bone slide) ---------- */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: var(--macumba-bone);
+  --text: var(--macumba-charcoal);
+  --muted: var(--macumba-ash);               /* 5.75:1 on bone */
+
+  --glass: rgba(255, 255, 255, 0.60);
+  --glass-strong: rgba(255, 255, 255, 0.80);
+  --glass-inset: rgba(245, 244, 235, 0.75);
+  --glass-border: rgba(26, 54, 180, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.90);
+  --glass-fallback: rgba(255, 255, 255, 0.92);
+  --shadow: rgba(26, 54, 180, 0.10);
+  --border: rgba(26, 54, 180, 0.14);
+
+  --primary: var(--macumba-cobalt);
+  --primary-hover: var(--macumba-cobalt-deep);
+  --on-primary: var(--macumba-white);
+  --accent: var(--macumba-cobalt);           /* periwinkle fails on bone (1.6:1) → cobalt, 8.5:1 */
+  --accent-soft: rgba(26, 54, 180, 0.08);
+  --accent-glow: rgba(26, 54, 180, 0.25);
+  --on-accent: var(--macumba-white);
+  --link: var(--macumba-cobalt);
+  --focus: var(--macumba-cobalt);
+  --focus-ring: rgba(26, 54, 180, 0.30);
+  --success: var(--signal-green-deep);
+  --success-soft: rgba(4, 120, 87, 0.40);
+  --danger: var(--signal-red-deep);
+  --danger-soft: rgba(180, 35, 24, 0.40);
+
+  --hero-bg: var(--macumba-cobalt);
+  --hero-text: var(--macumba-white);
+  --hero-muted: rgba(255, 255, 255, 0.82);
+  --hero-pill-bg: var(--macumba-charcoal);
+  --hero-pill-text: var(--macumba-white);
+
+  --backdrop-base-1: #E8EAF3;                /* bone with a cobalt tint */
+  --backdrop-glow-1: rgba(26, 54, 180, 0.12);
+  --backdrop-glow-2: rgba(26, 54, 180, 0.08);
+  --backdrop-glow-3: rgba(164, 194, 244, 0.35);
+  --backdrop-blue: rgba(26, 54, 180, 0.06);
+  --backdrop-line: rgba(26, 54, 180, 0.06);
+  --backdrop-dot: rgba(29, 29, 29, 0.06);
+}
