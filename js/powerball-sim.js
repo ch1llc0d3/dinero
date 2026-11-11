@@ -119,6 +119,14 @@
   function t(key) {
     return simStrings[lang()][key];
   }
+  function escAttr(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
 
   // ---------- formatting ----------
   function money(n) {
@@ -368,11 +376,11 @@
       var tierTotal = tier.prize === null ? money(state.jackpot) : money(tier.prize * count);
       rows +=
         "<tr>" +
-        '<td class="tier-key">' + tier.key + "</td>" +
-        "<td>" + t(MATCH_KEYS[tier.key]) + "</td>" +
-        '<td class="num">' + count.toLocaleString("en-US") + "</td>" +
-        '<td class="num">' + prizeEach + "</td>" +
-        '<td class="num">' + tierTotal + "</td>" +
+        '<td class="tier-key" data-label="' + escAttr(t("tier")) + '">' + tier.key + "</td>" +
+        '<td data-label="' + escAttr(t("match")) + '">' + t(MATCH_KEYS[tier.key]) + "</td>" +
+        '<td class="num" data-label="' + escAttr(t("wins")) + '">' + count.toLocaleString("en-US") + "</td>" +
+        '<td class="num" data-label="' + escAttr(t("prizeEach")) + '">' + prizeEach + "</td>" +
+        '<td class="num" data-label="' + escAttr(t("tierTotal")) + '">' + tierTotal + "</td>" +
         "</tr>";
     });
 

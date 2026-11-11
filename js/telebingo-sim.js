@@ -133,6 +133,14 @@
   function t(key) {
     return simStrings[lang()][key];
   }
+  function escAttr(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
 
   // ---------- formatting ----------
   // Guaraníes: no decimals, dot thousands separator (es-PY style).
@@ -394,11 +402,11 @@
       var tierTotal = prize === 0 ? "—" : money(prize * count);
       rows +=
         "<tr>" +
-        '<td class="tier-key">' + t(GAME_KEYS[tier.game]) + "</td>" +
-        '<td class="num">' + tier.hits + "</td>" +
-        '<td class="num">' + count.toLocaleString("en-US") + "</td>" +
-        '<td class="num">' + prizeEach + "</td>" +
-        '<td class="num">' + tierTotal + "</td>" +
+        '<td class="tier-key" data-label="' + escAttr(t("game")) + '">' + t(GAME_KEYS[tier.game]) + "</td>" +
+        '<td class="num" data-label="' + escAttr(t("hits")) + '">' + tier.hits + "</td>" +
+        '<td class="num" data-label="' + escAttr(t("wins")) + '">' + count.toLocaleString("en-US") + "</td>" +
+        '<td class="num" data-label="' + escAttr(t("prizeEach")) + '">' + prizeEach + "</td>" +
+        '<td class="num" data-label="' + escAttr(t("tierTotal")) + '">' + tierTotal + "</td>" +
         "</tr>";
     });
 
