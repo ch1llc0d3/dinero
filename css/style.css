@@ -1,24 +1,100 @@
-:root,
-:root[data-theme="dark"] {
-  --bg: #0d1117;
-  --surface: #161b22;
-  --border: #30363d;
-  --text: #e6edf3;
-  --muted: #8b949e;
-  --accent: #f0b429;
-  --accent-2: #3fb950;
-  --hero-gradient-start: #10151d;
+/* =====================================================================
+   System Design Dinero — glassmorphism theme
+   Translucent frosted-glass surfaces, soft background blurs and glowing
+   borders over an esoteric, data-driven backdrop. See
+   docs/design-system.md for the palette and token rationale.
+   ===================================================================== */
+
+/* ---------- brand palette (fixed, theme-independent) ---------- */
+:root {
+  --mystic-crimson: #8B0000;     /* Primary — headers, primary buttons, branding */
+  --lucky-gold: #FFD700;         /* Secondary — wins, badges, highlights */
+  --algorithmic-blue: #1E3A8A;   /* Accent / Action — links, active, focus */
+  --parchment-cream: #FDFBF7;    /* Background (Light) */
+  --terminal-dark: #0F172A;      /* Background (Dark) */
+  --vibrant-emerald: #10B981;    /* Success / Win */
+
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --blur: 18px;
 }
 
+/* ---------- semantic tokens: dark (default) ---------- */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: var(--terminal-dark);
+  --text: var(--parchment-cream);
+  --muted: rgba(253, 251, 247, 0.68);
+
+  /* frosted glass */
+  --glass: rgba(255, 255, 255, 0.06);
+  --glass-strong: rgba(255, 255, 255, 0.10);
+  --glass-inset: rgba(15, 23, 42, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.16);
+  --shadow: rgba(0, 0, 0, 0.45);
+  --border: rgba(255, 255, 255, 0.12);
+
+  /* roles — tints of the brand colours where the raw hex fails contrast */
+  --primary: var(--mystic-crimson);
+  --primary-hover: #A80F0F;
+  --accent: var(--lucky-gold);               /* gold text / values */
+  --accent-soft: rgba(255, 215, 0, 0.10);
+  --accent-glow: rgba(255, 215, 0, 0.35);
+  --link: #8FA8F0;                           /* Algorithmic Blue, lightened for dark bg */
+  --focus: #5B7FE0;
+  --success: var(--vibrant-emerald);
+  --success-soft: rgba(16, 185, 129, 0.45);
+  --danger: #FF6B6B;                         /* Mystic Crimson is too dark for text here */
+  --danger-soft: rgba(255, 107, 107, 0.45);
+
+  /* backdrop */
+  --backdrop-base-1: #3A0510;                /* Mystic Crimson sunk into Terminal Dark */
+  --backdrop-glow-1: rgba(139, 0, 0, 0.85);
+  --backdrop-glow-2: rgba(139, 0, 0, 0.60);
+  --backdrop-glow-3: rgba(255, 215, 0, 0.10);
+  --backdrop-blue: rgba(30, 58, 138, 0.35);
+  --backdrop-line: rgba(255, 215, 0, 0.07);
+  --backdrop-dot: rgba(253, 251, 247, 0.06);
+}
+
+/* ---------- semantic tokens: light ---------- */
 :root[data-theme="light"] {
-  --bg: #f6f8fa;
-  --surface: #ffffff;
-  --border: #d0d7de;
-  --text: #1f2328;
-  --muted: #59636e;
-  --accent: #b07d0a;
-  --accent-2: #1a7f37;
-  --hero-gradient-start: #eef1f4;
+  color-scheme: light;
+  --bg: var(--parchment-cream);
+  --text: #2A0E0E;
+  --muted: #6E5650;
+
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-strong: rgba(255, 255, 255, 0.75);
+  --glass-inset: rgba(253, 251, 247, 0.70);
+  --glass-border: rgba(139, 0, 0, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.9);
+  --shadow: rgba(139, 0, 0, 0.10);
+  --border: rgba(139, 0, 0, 0.14);
+
+  --primary: var(--mystic-crimson);
+  --primary-hover: #6E0000;
+  --accent: #8A6A00;                         /* Lucky Gold, darkened for cream bg */
+  --accent-soft: rgba(255, 215, 0, 0.22);
+  --accent-glow: rgba(214, 170, 0, 0.45);
+  --link: var(--algorithmic-blue);
+  --focus: var(--algorithmic-blue);
+  --success: #047857;                        /* Vibrant Emerald, darkened for cream bg */
+  --success-soft: rgba(4, 120, 87, 0.40);
+  --danger: var(--mystic-crimson);
+  --danger-soft: rgba(139, 0, 0, 0.40);
+
+  --backdrop-base-1: #F7ECE4;                /* Parchment Cream with a crimson blush */
+  --backdrop-glow-1: rgba(139, 0, 0, 0.16);
+  --backdrop-glow-2: rgba(139, 0, 0, 0.10);
+  --backdrop-glow-3: rgba(255, 215, 0, 0.28);
+  --backdrop-blue: rgba(30, 58, 138, 0.08);
+  --backdrop-line: rgba(139, 0, 0, 0.07);
+  --backdrop-dot: rgba(42, 14, 14, 0.07);
 }
 
 /* Smooth theme transition */
@@ -41,14 +117,78 @@ body {
   line-height: 1.6;
 }
 
+/* Esoteric / data backdrop: crimson + gold glows, a faint "zodiac wheel"
+   of concentric rings, and a data-grid dot pattern. Fixed behind
+   everything so the glass surfaces have something to blur. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    repeating-radial-gradient(circle at 85% 18%, transparent 0 46px, var(--backdrop-line) 47px 48px),
+    repeating-radial-gradient(circle at 8% 78%, transparent 0 38px, var(--backdrop-line) 39px 40px),
+    radial-gradient(circle, var(--backdrop-dot) 1px, transparent 1.5px) 0 0 / 22px 22px,
+    radial-gradient(30rem 22rem at 80% 10%, var(--backdrop-glow-3), transparent 70%),
+    radial-gradient(90rem 60rem at 10% -5%, var(--backdrop-glow-1), transparent 75%),
+    radial-gradient(70rem 55rem at 100% 70%, var(--backdrop-glow-2), transparent 75%),
+    radial-gradient(40rem 28rem at 30% 105%, var(--backdrop-blue), transparent 70%),
+    linear-gradient(160deg, var(--backdrop-base-1), var(--bg) 85%);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---------- glass surfaces ---------- */
+.card,
+.sim,
+.run,
+.controls .switch-group,
+#theme-toggle {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(140%);
+  backdrop-filter: blur(var(--blur)) saturate(140%);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 10px 32px var(--shadow);
+}
+
+/* Browsers without backdrop-filter get a more opaque surface instead */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card,
+  .sim,
+  .run,
+  .controls .switch-group,
+  #theme-toggle {
+    background: var(--glass-strong);
+  }
+  :root:not([data-theme="light"]) .card,
+  :root:not([data-theme="light"]) .sim,
+  :root:not([data-theme="light"]) .run,
+  :root:not([data-theme="light"]) .controls .switch-group,
+  :root:not([data-theme="light"]) #theme-toggle {
+    background: rgba(30, 20, 34, 0.92);
+  }
+}
+
 .hero {
   text-align: center;
   padding: 5rem 1rem 3rem;
-  background: linear-gradient(180deg, var(--hero-gradient-start) 0%, var(--bg) 100%);
   border-bottom: 1px solid var(--border);
 }
 
-.hero h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+  text-shadow: 0 0 28px var(--accent-glow);
+}
 
 .tagline {
   color: var(--muted);
@@ -57,17 +197,30 @@ body {
   margin: 0 auto 1.5rem;
 }
 
+/* gold "claim your daily cash" pill */
 .cta {
   display: inline-block;
-  padding: 0.6rem 1.4rem;
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  color: var(--accent);
+  padding: 0.65rem 1.6rem;
+  border: 1px solid rgba(255, 215, 0, 0.9);
+  border-radius: 999px;
+  color: #2A1600;
+  background: linear-gradient(180deg, #FFE45C 0%, var(--lucky-gold) 45%, #C9A100 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 0 18px var(--accent-glow);
   text-decoration: none;
-  font-weight: 600;
-  transition: background 0.2s, color 0.2s;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  transition: box-shadow 0.2s, transform 0.2s;
 }
-.cta:hover { background: var(--accent); color: var(--bg); }
+.cta:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    0 0 28px rgba(255, 215, 0, 0.6);
+}
 
 main { max-width: 60rem; margin: 0 auto; padding: 2rem 1rem; }
 
@@ -80,13 +233,17 @@ h2 { margin-bottom: 1.5rem; }
 }
 
 .card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
-  transition: transform 0.2s, border-color 0.2s;
 }
-.card:hover { transform: translateY(-4px); border-color: var(--accent); }
+/* glowing gold border on hover (main.js owns the card's inline transform) */
+.card:hover {
+  border-color: rgba(255, 215, 0, 0.55);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    0 10px 32px var(--shadow),
+    0 0 22px var(--accent-glow);
+}
 
 .card-icon { font-size: 2rem; }
 .card h3 { margin: 0.5rem 0; }
@@ -102,7 +259,9 @@ h2 { margin-bottom: 1.5rem; }
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
@@ -111,7 +270,8 @@ h2 { margin-bottom: 1.5rem; }
 .group-heading .flag { font-size: 1.3rem; }
 
 .card-link {
-  color: var(--accent-2);
+  display: inline-block;
+  color: var(--link);
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
@@ -120,20 +280,16 @@ h2 { margin-bottom: 1.5rem; }
 
 .run {
   margin-top: 3rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
 }
 
-/* ---------- interactive powerball simulator ---------- */
+/* ---------- interactive simulators ---------- */
 .sim {
   position: relative;
   overflow: hidden;
   margin-top: 3rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   padding: 1.5rem;
 }
 
@@ -158,6 +314,23 @@ h2 { margin-bottom: 1.5rem; }
   margin-bottom: 1.25rem;
 }
 
+/* Nested panels: tinted translucent insets (no nested blur — cheaper and
+   the parent glass already provides the frost). */
+.fact,
+.stat,
+.sstat,
+.verdict,
+.net-card,
+.tier-wrap,
+pre,
+.sim-config input,
+.preset-chip,
+.sim-btn,
+.sn-ball {
+  background: var(--glass-inset);
+  border: 1px solid var(--border);
+}
+
 /* ---------- 2026 facts strip ---------- */
 .sim-facts {
   display: grid;
@@ -170,14 +343,12 @@ h2 { margin-bottom: 1.5rem; }
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 0.7rem 0.9rem;
 }
 
 .fact-value {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--accent);
@@ -218,15 +389,15 @@ h2 { margin-bottom: 1.5rem; }
   font-family: inherit;
   font-size: 0.95rem;
   color: var(--text);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 0.45rem 0.6rem;
   width: 9.5rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 .sim-config input:focus {
   outline: none;
-  border-color: var(--accent);
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.35);
 }
 .sim-config input:disabled {
   opacity: 0.6;
@@ -240,16 +411,14 @@ h2 { margin-bottom: 1.5rem; }
 }
 
 .preset-chip {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--muted);
-  background: var(--bg);
-  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.3rem 0.75rem;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  transition: color 0.15s, border-color 0.15s, background 0.15s, box-shadow 0.15s;
 }
 .preset-chip:hover:not(.disabled) {
   color: var(--text);
@@ -258,7 +427,8 @@ h2 { margin-bottom: 1.5rem; }
 .preset-chip.active {
   color: var(--accent);
   border-color: var(--accent);
-  background: rgba(240, 180, 41, 0.08);
+  background: var(--accent-soft);
+  box-shadow: 0 0 12px var(--accent-soft);
 }
 .preset-chip.disabled {
   opacity: 0.45;
@@ -272,37 +442,45 @@ h2 { margin-bottom: 1.5rem; }
 
 .sim-btn {
   font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 0.5rem 1.1rem;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  background: var(--bg);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
   color: var(--text);
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s, opacity 0.2s;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
 }
 .sim-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
+/* Primary action — Mystic Crimson with a gold rim, like the mockup */
 .sim-btn-start {
-  border-color: var(--accent-2);
-  color: var(--accent-2);
+  background: linear-gradient(180deg, #A51616 0%, var(--primary) 100%);
+  border-color: rgba(255, 215, 0, 0.7);
+  color: var(--parchment-cream);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .sim-btn-start:hover:not(:disabled) {
-  background: var(--accent-2);
-  color: var(--bg);
+  background: linear-gradient(180deg, #B81E1E 0%, var(--primary-hover) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 0 16px var(--accent-glow);
 }
 
+/* Cash out — gold outline ("Cash & Payouts") */
 .sim-btn-stop {
-  border-color: #f85149;
-  color: #f85149;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .sim-btn-stop:hover:not(:disabled) {
-  background: #f85149;
-  color: var(--bg);
+  background: var(--lucky-gold);
+  border-color: var(--lucky-gold);
+  color: #2A1600;
+  box-shadow: 0 0 16px var(--accent-glow);
 }
 
 /* ---------- live stat cards ---------- */
@@ -311,6 +489,7 @@ h2 { margin-bottom: 1.5rem; }
   grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
   gap: 0.6rem;
   margin-bottom: 1rem;
+  border-radius: var(--radius-md);
 }
 .sim-live[hidden] {
   display: none;
@@ -320,15 +499,13 @@ h2 { margin-bottom: 1.5rem; }
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 0.65rem 0.85rem;
   min-width: 0;
 }
 
 .stat-value {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 1.25rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -347,13 +524,13 @@ h2 { margin-bottom: 1.5rem; }
 .stat-net .stat-value {
   transition: color 0.3s ease;
 }
-.stat-net .stat-value.net-negative { color: #f85149; }
-.stat-net .stat-value.net-positive { color: var(--accent-2); }
+.stat-net .stat-value.net-negative { color: var(--danger); }
+.stat-net .stat-value.net-positive { color: var(--success); }
 
-/* live panel glows softly while the sim is running */
+/* live panel glows softly (gold) while the sim is running */
 @keyframes simGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 180, 41, 0); }
-  50% { box-shadow: 0 0 14px 2px rgba(240, 180, 41, 0.25); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+  50% { box-shadow: 0 0 18px 2px var(--accent-glow); }
 }
 .sim-running .sim-live {
   animation: simGlow 2s ease-in-out infinite;
@@ -381,11 +558,9 @@ h2 { margin-bottom: 1.5rem; }
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 0.9rem 1.1rem;
   margin-bottom: 0.75rem;
-  border: 1px solid var(--border);
-  background: var(--bg);
 }
 .verdict-title {
   font-size: 1.15rem;
@@ -397,30 +572,30 @@ h2 { margin-bottom: 1.5rem; }
 }
 .verdict-jackpot {
   border-color: var(--accent);
-  background: rgba(240, 180, 41, 0.08);
+  background: var(--accent-soft);
+  box-shadow: 0 0 22px var(--accent-glow);
 }
 .verdict-jackpot .verdict-title {
   color: var(--accent);
 }
 .verdict-loss {
-  border-color: rgba(248, 81, 73, 0.5);
+  border-color: var(--danger-soft);
 }
 .verdict-win {
-  border-color: var(--accent-2);
+  border-color: var(--success);
+  box-shadow: 0 0 18px var(--success-soft);
 }
 
 .net-card {
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 0.9rem 1.1rem;
   margin-bottom: 0.75rem;
-  background: var(--bg);
 }
 .net-card-value {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 2rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
@@ -431,10 +606,10 @@ h2 { margin-bottom: 1.5rem; }
   color: var(--muted);
   font-weight: 600;
 }
-.net-card.net-negative { border-color: rgba(248, 81, 73, 0.5); }
-.net-card.net-negative .net-card-value { color: #f85149; }
-.net-card.net-positive { border-color: rgba(63, 185, 80, 0.5); }
-.net-card.net-positive .net-card-value { color: var(--accent-2); }
+.net-card.net-negative { border-color: var(--danger-soft); }
+.net-card.net-negative .net-card-value { color: var(--danger); }
+.net-card.net-positive { border-color: var(--success-soft); }
+.net-card.net-positive .net-card-value { color: var(--success); }
 
 .summary-stats {
   display: grid;
@@ -447,14 +622,12 @@ h2 { margin-bottom: 1.5rem; }
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 0.65rem 0.85rem;
   min-width: 0;
 }
 .sstat-value {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 1.05rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -468,14 +641,12 @@ h2 { margin-bottom: 1.5rem; }
   letter-spacing: 0.06em;
   color: var(--muted);
 }
-.sstat-pos .sstat-value { color: var(--accent-2); }
-.sstat-neg .sstat-value { color: #f85149; }
+.sstat-pos .sstat-value { color: var(--success); }
+.sstat-neg .sstat-value { color: var(--danger); }
 
 /* tier breakdown table */
 .tier-wrap {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 0.9rem 1.1rem;
   overflow-x: auto;
   min-width: 0;
@@ -509,7 +680,7 @@ h2 { margin-bottom: 1.5rem; }
   border-bottom: none;
 }
 .tier-table .num {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
@@ -517,7 +688,7 @@ h2 { margin-bottom: 1.5rem; }
   text-align: right;
 }
 .tier-key {
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
   color: var(--accent);
 }
@@ -535,9 +706,9 @@ h2 { margin-bottom: 1.5rem; }
 /* jackpot celebration: gold flash on the heading */
 @keyframes jackpotFlash {
   0%, 100% { color: inherit; text-shadow: none; }
-  25% { color: var(--accent); text-shadow: 0 0 18px rgba(240, 180, 41, 0.7); }
+  25% { color: var(--accent); text-shadow: 0 0 18px rgba(255, 215, 0, 0.7); }
   50% { color: inherit; text-shadow: none; }
-  75% { color: var(--accent); text-shadow: 0 0 18px rgba(240, 180, 41, 0.7); }
+  75% { color: var(--accent); text-shadow: 0 0 18px rgba(255, 215, 0, 0.7); }
 }
 .sim.jackpot #sim-heading,
 .sim.jackpot #tb-heading,
@@ -557,14 +728,12 @@ h2 { margin-bottom: 1.5rem; }
 }
 
 pre {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   padding: 1rem;
   overflow-x: auto;
 }
 
-code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9rem; }
+code { font-family: var(--font-mono); font-size: 0.9rem; }
 
 footer {
   text-align: center;
@@ -591,14 +760,12 @@ footer {
 
 .switch-group {
   display: flex;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 999px;
   overflow: hidden;
-  background: var(--surface);
 }
 
 .switch-btn {
-  padding: 0.35rem 0.7rem;
+  padding: 0.35rem 0.75rem;
   font-size: 0.8rem;
   font-weight: 600;
   font-family: inherit;
@@ -617,16 +784,15 @@ footer {
   color: var(--text);
 }
 
+/* active = gold badge */
 .switch-btn.active,
 .switch-btn[aria-pressed="true"] {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--lucky-gold);
+  color: #2A1600;
 }
 
 #theme-toggle {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
+  border-radius: 999px;
   font-size: 1rem;
   line-height: 1;
   padding: 0.3rem 0.55rem;
@@ -688,9 +854,10 @@ footer {
 @media (max-width: 480px) {
   .controls { top: 0.5rem; right: 0.5rem; }
   .switch-btn { padding: 0.3rem 0.55rem; }
+  .hero h1 { font-size: 2.4rem; }
 }
 
-/* ---------- Seneté ball draws + pozos ---------- */
+/* ---------- Seneté / Binguito ball draws + pozos ---------- */
 .sn-draw-wrap {
   margin-bottom: 1rem;
 }
@@ -710,17 +877,21 @@ footer {
   gap: 0.35rem;
 }
 
+/* bingo balls: glassy spheres with a gold rim */
 .sn-ball {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2.2rem;
   height: 2.2rem;
-  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.85rem;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 32% 28%, var(--glass-highlight), transparent 55%),
+    var(--glass-inset);
+  border-color: rgba(255, 215, 0, 0.45);
   border-radius: 50%;
   flex-shrink: 0;
 }
@@ -731,4 +902,3 @@ footer {
   gap: 0.75rem;
   margin-bottom: 1rem;
 }
-

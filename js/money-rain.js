@@ -44,8 +44,8 @@
   var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
   camera.position.z = 10;
 
-  var greenTexture = makeBillTexture("#2e7d32", "#a5d6a7", "$");
-  var goldTexture = makeBillTexture("#b8860b", "#ffe082", "$");
+  var greenTexture = makeBillTexture("#047857", "#6EE7B7", "$"); // Vibrant Emerald (darkened)
+  var goldTexture = makeBillTexture("#B8860B", "#FFD700", "$"); // Lucky Gold
 
   var bills = [];
   var spawnAcc = 0;
