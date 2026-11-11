@@ -1,8 +1,9 @@
 // Money rain — Three.js particle effect for the Powerball simulator.
 // Green bills fall while the simulation is running (intensity scales with
-// how fast you're burning money); on a jackpot hit they turn gold and
-// burst. Falls back to a no-op when Three.js failed to load (offline) or
-// when the user prefers reduced motion.
+// how fast you're burning money); on a jackpot hit they turn into
+// periwinkle-on-cobalt Macumba bills and burst. Falls back to a no-op
+// when Three.js failed to load (offline) or when the user prefers
+// reduced motion.
 
 (function () {
   "use strict";
@@ -45,7 +46,7 @@
   camera.position.z = 10;
 
   var greenTexture = makeBillTexture("#047857", "#6EE7B7", "$"); // Vibrant Emerald (darkened)
-  var goldTexture = makeBillTexture("#B8860B", "#FFD700", "$"); // Lucky Gold
+  var goldTexture = makeBillTexture("#1A36B4", "#A4C2F4", "$"); // Macumba cobalt + periwinkle (css/tokens.css)
 
   var bills = [];
   var spawnAcc = 0;
@@ -172,7 +173,7 @@
     celebrate: function () {
       gold = true;
       spawnRate = 40;
-      // Re-tint existing bills to gold
+      // Re-tint existing bills to the jackpot (brand) bill
       bills.forEach(function (b) {
         b.material.map = goldTexture;
         b.material.needsUpdate = true;

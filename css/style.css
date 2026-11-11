@@ -1,101 +1,10 @@
 /* =====================================================================
-   System Design Dinero — glassmorphism theme
-   Translucent frosted-glass surfaces, soft background blurs and glowing
-   borders over an esoteric, data-driven backdrop. See
-   docs/design-system.md for the palette and token rationale.
+   Macumba — component styles
+   Translucent frosted-glass surfaces over a cobalt/charcoal backdrop,
+   flat cobalt "slide" hero, Inter type. All colours come from the
+   semantic tokens in css/tokens.css — never hard-code a hex here.
+   See docs/design-system.md and docs/brand/.
    ===================================================================== */
-
-/* ---------- brand palette (fixed, theme-independent) ---------- */
-:root {
-  --mystic-crimson: #8B0000;     /* Primary — headers, primary buttons, branding */
-  --lucky-gold: #FFD700;         /* Secondary — wins, badges, highlights */
-  --algorithmic-blue: #1E3A8A;   /* Accent / Action — links, active, focus */
-  --parchment-cream: #FDFBF7;    /* Background (Light) */
-  --terminal-dark: #0F172A;      /* Background (Dark) */
-  --vibrant-emerald: #10B981;    /* Success / Win */
-
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-sm: 10px;
-  --blur: 18px;
-}
-
-/* ---------- semantic tokens: dark (default) ---------- */
-:root,
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: var(--terminal-dark);
-  --text: var(--parchment-cream);
-  --muted: rgba(253, 251, 247, 0.68);
-
-  /* frosted glass */
-  --glass: rgba(255, 255, 255, 0.06);
-  --glass-strong: rgba(255, 255, 255, 0.10);
-  --glass-inset: rgba(15, 23, 42, 0.45);
-  --glass-border: rgba(255, 255, 255, 0.14);
-  --glass-highlight: rgba(255, 255, 255, 0.16);
-  --shadow: rgba(0, 0, 0, 0.45);
-  --border: rgba(255, 255, 255, 0.12);
-
-  /* roles — tints of the brand colours where the raw hex fails contrast */
-  --primary: var(--mystic-crimson);
-  --primary-hover: #A80F0F;
-  --accent: var(--lucky-gold);               /* gold text / values */
-  --accent-soft: rgba(255, 215, 0, 0.10);
-  --accent-glow: rgba(255, 215, 0, 0.35);
-  --link: #8FA8F0;                           /* Algorithmic Blue, lightened for dark bg */
-  --focus: #5B7FE0;
-  --success: var(--vibrant-emerald);
-  --success-soft: rgba(16, 185, 129, 0.45);
-  --danger: #FF6B6B;                         /* Mystic Crimson is too dark for text here */
-  --danger-soft: rgba(255, 107, 107, 0.45);
-
-  /* backdrop */
-  --backdrop-base-1: #3A0510;                /* Mystic Crimson sunk into Terminal Dark */
-  --backdrop-glow-1: rgba(139, 0, 0, 0.85);
-  --backdrop-glow-2: rgba(139, 0, 0, 0.60);
-  --backdrop-glow-3: rgba(255, 215, 0, 0.10);
-  --backdrop-blue: rgba(30, 58, 138, 0.35);
-  --backdrop-line: rgba(255, 215, 0, 0.07);
-  --backdrop-dot: rgba(253, 251, 247, 0.06);
-}
-
-/* ---------- semantic tokens: light ---------- */
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg: var(--parchment-cream);
-  --text: #2A0E0E;
-  --muted: #6E5650;
-
-  --glass: rgba(255, 255, 255, 0.55);
-  --glass-strong: rgba(255, 255, 255, 0.75);
-  --glass-inset: rgba(253, 251, 247, 0.70);
-  --glass-border: rgba(139, 0, 0, 0.14);
-  --glass-highlight: rgba(255, 255, 255, 0.9);
-  --shadow: rgba(139, 0, 0, 0.10);
-  --border: rgba(139, 0, 0, 0.14);
-
-  --primary: var(--mystic-crimson);
-  --primary-hover: #6E0000;
-  --accent: #8A6A00;                         /* Lucky Gold, darkened for cream bg */
-  --accent-soft: rgba(255, 215, 0, 0.22);
-  --accent-glow: rgba(214, 170, 0, 0.45);
-  --link: var(--algorithmic-blue);
-  --focus: var(--algorithmic-blue);
-  --success: #047857;                        /* Vibrant Emerald, darkened for cream bg */
-  --success-soft: rgba(4, 120, 87, 0.40);
-  --danger: var(--mystic-crimson);
-  --danger-soft: rgba(139, 0, 0, 0.40);
-
-  --backdrop-base-1: #F7ECE4;                /* Parchment Cream with a crimson blush */
-  --backdrop-glow-1: rgba(139, 0, 0, 0.16);
-  --backdrop-glow-2: rgba(139, 0, 0, 0.10);
-  --backdrop-glow-3: rgba(255, 215, 0, 0.28);
-  --backdrop-blue: rgba(30, 58, 138, 0.08);
-  --backdrop-line: rgba(139, 0, 0, 0.07);
-  --backdrop-dot: rgba(42, 14, 14, 0.07);
-}
 
 /* Smooth theme transition */
 body,
@@ -111,13 +20,13 @@ footer {
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
   background: var(--bg);
   color: var(--text);
   line-height: 1.6;
 }
 
-/* Esoteric / data backdrop: crimson + gold glows, a faint "zodiac wheel"
+/* Esoteric / data backdrop: cobalt + periwinkle glows, a faint "zodiac wheel"
    of concentric rings, and a data-grid dot pattern. Fixed behind
    everything so the glass surfaces have something to blur. */
 body::before {
@@ -173,57 +82,57 @@ input:focus-visible {
   :root:not([data-theme="light"]) .run,
   :root:not([data-theme="light"]) .controls .switch-group,
   :root:not([data-theme="light"]) #theme-toggle {
-    background: rgba(30, 20, 34, 0.92);
+    background: var(--glass-fallback);
   }
 }
 
 .hero {
   text-align: center;
   padding: 5rem 1rem 3rem;
-  border-bottom: 1px solid var(--border);
+  background: var(--hero-bg);
+  color: var(--hero-text);
 }
 
 .hero h1 {
   font-size: 3rem;
   margin-bottom: 0.5rem;
-  letter-spacing: -0.01em;
-  text-shadow: 0 0 28px var(--accent-glow);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 .tagline {
-  color: var(--muted);
+  color: var(--hero-muted);
   font-size: 1.2rem;
+  font-weight: 300;
   max-width: 40rem;
   margin: 0 auto 1.5rem;
 }
 
-/* gold "claim your daily cash" pill */
+/* charcoal pill — the "ch1llc0d3" tag from the title slide */
 .cta {
   display: inline-block;
   padding: 0.65rem 1.6rem;
-  border: 1px solid rgba(255, 215, 0, 0.9);
-  border-radius: 999px;
-  color: #2A1600;
-  background: linear-gradient(180deg, #FFE45C 0%, var(--lucky-gold) 45%, #C9A100 100%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 0 18px var(--accent-glow);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  color: var(--hero-pill-text);
+  background: var(--hero-pill-bg);
   text-decoration: none;
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   font-size: 0.9rem;
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
 }
 .cta:hover {
   transform: translateY(-1px);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.6),
-    0 0 28px rgba(255, 215, 0, 0.6);
+  background: var(--hero-text);
+  color: var(--hero-bg);
 }
 
 main { max-width: 60rem; margin: 0 auto; padding: 2rem 1rem; }
 
+h1, h2, h3 { font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; }
 h2 { margin-bottom: 1.5rem; }
 
 .cards {
@@ -236,9 +145,9 @@ h2 { margin-bottom: 1.5rem; }
   border-radius: var(--radius-lg);
   padding: 1.5rem;
 }
-/* glowing gold border on hover (main.js owns the card's inline transform) */
+/* glowing accent border on hover (main.js owns the card's inline transform) */
 .card:hover {
-  border-color: rgba(255, 215, 0, 0.55);
+  border-color: var(--accent);
   box-shadow:
     inset 0 1px 0 var(--glass-highlight),
     0 10px 32px var(--shadow),
@@ -397,7 +306,7 @@ pre,
 .sim-config input:focus {
   outline: none;
   border-color: var(--focus);
-  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.35);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 .sim-config input:disabled {
   opacity: 0.6;
@@ -457,29 +366,30 @@ pre,
   cursor: not-allowed;
 }
 
-/* Primary action — Mystic Crimson with a gold rim, like the mockup */
+/* Primary action — flat cobalt block, like the slides */
 .sim-btn-start {
-  background: linear-gradient(180deg, #A51616 0%, var(--primary) 100%);
-  border-color: rgba(255, 215, 0, 0.7);
-  color: var(--parchment-cream);
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 .sim-btn-start:hover:not(:disabled) {
-  background: linear-gradient(180deg, #B81E1E 0%, var(--primary-hover) 100%);
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
     0 0 16px var(--accent-glow);
 }
 
-/* Cash out — gold outline ("Cash & Payouts") */
+/* Cash out — accent outline, fills on hover */
 .sim-btn-stop {
   border-color: var(--accent);
   color: var(--accent);
 }
 .sim-btn-stop:hover:not(:disabled) {
-  background: var(--lucky-gold);
-  border-color: var(--lucky-gold);
-  color: #2A1600;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
   box-shadow: 0 0 16px var(--accent-glow);
 }
 
@@ -527,9 +437,9 @@ pre,
 .stat-net .stat-value.net-negative { color: var(--danger); }
 .stat-net .stat-value.net-positive { color: var(--success); }
 
-/* live panel glows softly (gold) while the sim is running */
+/* live panel glows softly (accent) while the sim is running */
 @keyframes simGlow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
   50% { box-shadow: 0 0 18px 2px var(--accent-glow); }
 }
 .sim-running .sim-live {
@@ -703,12 +613,12 @@ pre,
   border-color: var(--accent);
 }
 
-/* jackpot celebration: gold flash on the heading */
+/* jackpot celebration: accent flash on the heading */
 @keyframes jackpotFlash {
   0%, 100% { color: inherit; text-shadow: none; }
-  25% { color: var(--accent); text-shadow: 0 0 18px rgba(255, 215, 0, 0.7); }
+  25% { color: var(--accent); text-shadow: 0 0 18px var(--accent-glow); }
   50% { color: inherit; text-shadow: none; }
-  75% { color: var(--accent); text-shadow: 0 0 18px rgba(255, 215, 0, 0.7); }
+  75% { color: var(--accent); text-shadow: 0 0 18px var(--accent-glow); }
 }
 .sim.jackpot #sim-heading,
 .sim.jackpot #tb-heading,
@@ -784,11 +694,11 @@ footer {
   color: var(--text);
 }
 
-/* active = gold badge */
+/* active = accent badge */
 .switch-btn.active,
 .switch-btn[aria-pressed="true"] {
-  background: var(--lucky-gold);
-  color: #2A1600;
+  background: var(--accent);
+  color: var(--on-accent);
 }
 
 #theme-toggle {
@@ -891,7 +801,7 @@ footer {
   background:
     radial-gradient(circle at 32% 28%, var(--glass-highlight), transparent 55%),
     var(--glass-inset);
-  border-color: rgba(255, 215, 0, 0.45);
+  border-color: var(--accent-glow);
   border-radius: 50%;
   flex-shrink: 0;
 }

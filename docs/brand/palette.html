@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Macumba Palette</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" />
+  <!-- Rendered straight from the project tokens: this page cannot drift from the code. -->
+  <link rel="stylesheet" href="../../css/tokens.css" />
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); padding: 0 0 3rem; }
+    header { background: var(--hero-bg); color: var(--hero-text); padding: 3rem 1rem 2.5rem; }
+    header .pill { display: inline-block; background: var(--hero-pill-bg); color: var(--hero-pill-text);
+      border-radius: var(--radius-pill); padding: 0.2rem 0.8rem; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem; }
+    h1 { font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; font-size: clamp(2rem, 6vw, 3rem); }
+    header p { color: var(--hero-muted); font-weight: 300; margin-top: 0.5rem; }
+    main, header > div { max-width: 60rem; margin: 0 auto; }
+    main { padding: 0 1rem; }
+    h2 { font-weight: 800; letter-spacing: -0.02em; margin: 2.5rem 0 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr)); gap: 0.75rem; }
+    .sw { border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+    .chip { height: 5.5rem; }
+    .meta { padding: 0.6rem 0.75rem; font-size: 0.8rem; }
+    .meta b { display: block; font-weight: 600; }
+    .meta code { font-family: var(--font-mono); color: var(--muted); font-size: 0.75rem; }
+    button { font: 600 0.85rem var(--font-sans); background: var(--accent); color: var(--on-accent);
+      border: 0; border-radius: var(--radius-pill); padding: 0.45rem 1rem; cursor: pointer; margin-top: 1.25rem; }
+    .demo { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+    .demo span { border-radius: var(--radius-sm); padding: 0.6rem 0.9rem; font-weight: 600; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header><div>
+    <span class="pill">ch1llc0d3</span>
+    <h1>Macumba palette</h1>
+    <p>Live from css/tokens.css. Toggle the theme to see the semantic layer remap.</p>
+    <button id="t" type="button">Toggle theme</button>
+  </div></header>
+  <main>
+    <h2>Brand</h2>
+    <div class="grid" id="brand"></div>
+    <h2>Semantic (current theme)</h2>
+    <div class="grid" id="semantic"></div>
+    <h2>Pairings</h2>
+    <div class="demo">
+      <span style="background:var(--macumba-cobalt);color:var(--macumba-white)">White on Cobalt</span>
+      <span style="background:var(--macumba-charcoal);color:var(--macumba-periwinkle)">Periwinkle on Charcoal</span>
+      <span style="background:var(--macumba-bone);color:var(--macumba-cobalt)">Cobalt on Bone</span>
+      <span style="background:var(--accent);color:var(--on-accent)">Accent badge</span>
+      <span style="background:var(--primary);color:var(--on-primary)">▶ Primary</span>
+    </div>
+  </main>
+  <script>
+    const brand = ["macumba-cobalt", "macumba-periwinkle", "macumba-bone", "macumba-charcoal", "macumba-white",
+      "macumba-cobalt-deep", "macumba-cobalt-bright", "macumba-cobalt-night", "macumba-ash",
+      "signal-green", "signal-green-deep", "signal-red", "signal-red-deep"];
+    const semantic = ["bg", "text", "muted", "primary", "primary-hover", "accent", "on-accent",
+      "link", "focus", "success", "danger", "hero-bg"];
+    function render(id, names) {
+      const cs = getComputedStyle(document.documentElement);
+      document.getElementById(id).innerHTML = names.map(n =>
+        `<div class="sw"><div class="chip" style="background:var(--${n})"></div>
+         <div class="meta"><b>--${n}</b><code>${cs.getPropertyValue("--" + n).trim()}</code></div></div>`).join("");
+    }
+    function draw() { render("brand", brand); render("semantic", semantic); }
+    document.getElementById("t").onclick = () => {
+      const r = document.documentElement;
+      r.dataset.theme = r.dataset.theme === "dark" ? "light" : "dark";
+      draw();
+    };
+    draw();
+  </script>
+</body>
+</html>

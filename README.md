@@ -13,6 +13,7 @@ Lottery probability simulations — how much money do you actually make (or lose
 | `telebingo.py` | Telebingo de Canal 9 (Paraguay) simulation (implemented) |
 | `senete.py` | Seneté (Paraguay) simulation — real 2026 rules |
 | `binguito.py` | Telebingo Triple (Talismán S.A.) simulation — real 2026 rules |
+| `docs/brand/` + `css/tokens.css` | Macumba brand guide, colour palette and design tokens (see [`docs/design-system.md`](docs/design-system.md)) |
 
 ## Simulations
 
