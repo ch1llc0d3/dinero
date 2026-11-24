@@ -148,7 +148,7 @@ const translations = {
     snDoble: "DOBLE CHANCE — 15 de 25",
     snPozoG: "POZO Grandioso (base supuesta)",
     snPozoD: "POZO Doble Chance (base supuesta)",
-    snPozoP: "Jackpot Poderoso (+₲100M/sem)",
+    snPozoP: "Pozo Poderoso (+₲100M/sem)",
     snWeeks: "sorteos (semanas)",
     snCartonesPlayed: "cartones jugados",
     bgHeading: "🎮 Binguito — Telebingo Triple, reglas reales 2026",
