@@ -87,7 +87,7 @@
       profit: "GANANCIA",
       loss: "PÉRDIDA",
       roi: "Retorno sobre lo invertido",
-      bestTier: "Mejor tier ganado",
+      bestTier: "Mejor categoría ganada",
       none: "ninguno",
       cantada1: "1RA. CANTADA — 12 de 25",
       cantada2: "2DA. CANTADA — 13 de 25",

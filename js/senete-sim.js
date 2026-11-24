@@ -86,7 +86,7 @@
       profit: "GANANCIA",
       loss: "PÉRDIDA",
       roi: "Retorno sobre lo invertido",
-      bestTier: "Mejor tier ganado",
+      bestTier: "Mejor categoría ganada",
       none: "ninguno",
       grandioso: "GRANDIOSO — 12 de 25",
       poderoso: "PODEROSO — 12 de 25",
