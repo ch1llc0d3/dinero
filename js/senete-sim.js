@@ -96,7 +96,7 @@
       pozoNow: "Pozos actuales",
       grandiosoPozo: "POZO Grandioso",
       doblePozo: "POZO Doble Chance",
-      poderosoJackpot: "Jackpot Poderoso",
+      poderosoJackpot: "Pozo Poderoso",
       assumed: "valores supuestos",
       hitsLabel: "aciertos",
       zeroHits: "consolaciones de 0 aciertos",
