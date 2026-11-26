@@ -293,8 +293,8 @@
   }
 
   function updateLive() {
-    el.liveWeeks.textContent = state.weeks.toLocaleString("en-US");
-    el.liveCartones.textContent = state.cartonesPlayed.toLocaleString("en-US");
+    el.liveWeeks.textContent = state.weeks.toLocaleString("es-PY");
+    el.liveCartones.textContent = state.cartonesPlayed.toLocaleString("es-PY");
     el.liveSpent.textContent = moneyCompact(state.totalSpent);
     el.liveWon.textContent = moneyCompact(state.earnings);
     var net = state.earnings - state.totalSpent;
@@ -361,15 +361,15 @@
       "</div>";
 
     html += '<div class="summary-stats">';
-    html += statCard(t("weeks"), state.weeks.toLocaleString("en-US"));
-    html += statCard(t("cartonesPlayed"), state.cartonesPlayed.toLocaleString("en-US"));
+    html += statCard(t("weeks"), state.weeks.toLocaleString("es-PY"));
+    html += statCard(t("cartonesPlayed"), state.cartonesPlayed.toLocaleString("es-PY"));
     html += statCard(t("totalInvested"), money(state.totalSpent));
     html += statCard(t("totalEarnings"), money(state.earnings));
     html += statCard(t("roi"), pct(roi), roi >= 0 ? "sstat-pos" : "sstat-neg");
     html += statCard(t("bestTier"), state.bestTier ? state.bestTier.label + " · " + moneyCompact(state.bestTier.amount) : t("none"));
-    if (state.zeroHits) html += statCard(t("zeroHits"), state.zeroHits.toLocaleString("en-US"));
-    if (state.freeCartons) html += statCard(t("freeCartons"), state.freeCartons.toLocaleString("en-US"));
-    if (state.azarWins) html += statCard(t("azarWins"), state.azarWins.toLocaleString("en-US"));
+    if (state.zeroHits) html += statCard(t("zeroHits"), state.zeroHits.toLocaleString("es-PY"));
+    if (state.freeCartons) html += statCard(t("freeCartons"), state.freeCartons.toLocaleString("es-PY"));
+    if (state.azarWins) html += statCard(t("azarWins"), state.azarWins.toLocaleString("es-PY"));
     html += "</div>";
 
     // per-jugada tier breakdown
@@ -380,7 +380,7 @@
         var parts = k.split(":");
         var jugada = parts[0], hits = parts[1];
         var name = jugada === "grandioso" ? t("grandioso") : jugada === "poderoso" ? t("poderoso") : jugada === "doble" ? t("doble") : "Cartones al azar";
-        html += statCard(name, state.tiers[k].toLocaleString("en-US") + " × " + (hits === "0" && jugada === "azar" ? "" : hits + " " + t("hitsLabel")));
+        html += statCard(name, state.tiers[k].toLocaleString("es-PY") + " × " + (hits === "0" && jugada === "azar" ? "" : hits + " " + t("hitsLabel")));
       });
       html += "</div>";
     }
