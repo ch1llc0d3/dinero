@@ -131,7 +131,7 @@
   // ---------- formatting ----------
   function money(n) {
     var sign = n < 0 ? "−" : "";
-    return sign + "$" + Math.abs(Math.round(n)).toLocaleString("en-US");
+    return sign + "$" + Math.abs(Math.round(n)).toLocaleString("es-PY");
   }
 
   // Compact money for big numbers: $2.04B, $600M, $20M
@@ -253,7 +253,7 @@
 
   function updateLive() {
     el.liveYears.textContent = (state.drawings / DRAWINGS_PER_YEAR).toFixed(1);
-    el.liveDrawings.textContent = state.drawings.toLocaleString("en-US");
+    el.liveDrawings.textContent = state.drawings.toLocaleString("es-PY");
     el.liveSpent.textContent = moneyCompact(state.totalSpent);
     el.liveWon.textContent = moneyCompact(state.earnings);
     var net = state.earnings - state.totalSpent;
@@ -341,7 +341,7 @@
     var verdictClass = state.hitJackpot ? "verdict-jackpot" : net >= 0 ? "verdict-win" : "verdict-loss";
     var sub = state.hitJackpot
       ? (state.drawings === 1 ? t("jackpotHitSub1") : t("jackpotHitSub"))
-          .replace("{years}", years).replace("{drawings}", state.drawings.toLocaleString("en-US"))
+          .replace("{years}", years).replace("{drawings}", state.drawings.toLocaleString("es-PY"))
       : t("cashedOutSub");
 
     var html = "";
@@ -359,7 +359,7 @@
 
     // Stat grid
     html += '<div class="summary-stats">';
-    html += statCard(t("drawingsPlayed"), state.drawings.toLocaleString("en-US"));
+    html += statCard(t("drawingsPlayed"), state.drawings.toLocaleString("es-PY"));
     html += statCard(t("timePlaying"), years + " " + t("years"));
     html += statCard(t("totalInvested"), money(state.totalSpent));
     html += statCard(t("totalEarnings"), money(state.earnings));
@@ -378,7 +378,7 @@
         "<tr>" +
         '<td class="tier-key" data-label="' + escAttr(t("tier")) + '">' + tier.key + "</td>" +
         '<td data-label="' + escAttr(t("match")) + '">' + t(MATCH_KEYS[tier.key]) + "</td>" +
-        '<td class="num" data-label="' + escAttr(t("wins")) + '">' + count.toLocaleString("en-US") + "</td>" +
+        '<td class="num" data-label="' + escAttr(t("wins")) + '">' + count.toLocaleString("es-PY") + "</td>" +
         '<td class="num" data-label="' + escAttr(t("prizeEach")) + '">' + prizeEach + "</td>" +
         '<td class="num" data-label="' + escAttr(t("tierTotal")) + '">' + tierTotal + "</td>" +
         "</tr>";
